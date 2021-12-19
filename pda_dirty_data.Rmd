@@ -17,3 +17,74 @@ library(assertr)
 library(testthat)
 ```
 
+1 MVP
+1.1 Task 1 - Decathlon Data
+This data is contained in the .rds file decathlon.rds. You’ll need to use read_rds() from readr to open it.
+
+# Call R file to process the rds file.
+
+```{r}
+source(here::here("R_scripts/read_rds_data.R"))
+```
+
+```{r}
+decathlon_data  
+```
+
+
+# 1.1.2 Analysis questions
+  ## 1 Who had the longest long jump seen in the data?
+```{r}
+decathlon_data %>% 
+  filter(long_jump == max(long_jump))
+```
+
+  ## 2 What was the average 100m time in each competition?
+```{r}
+decathlon_data %>% 
+  group_by(competition) %>%
+   summarise(mean(x100m))
+```
+  
+## 3 Who had the highest total points across both competitions?
+```{r}
+decathlon_data %>% 
+  filter(points== max(points))
+```
+  ## 4 What was the shot-put scores for the top three competitors in each competition?
+```{r}
+rbind(decathlon_data %>% 
+  filter(competition == "olympicg") %>%
+  select(competition,competitor,shot_put) %>%
+  group_by(competition, competitor) %>%
+  arrange(desc(shot_put)) %>%
+  head(3), 
+  decathlon_data %>% 
+  filter(competition == "decastar") %>%
+  select(competition,competitor,shot_put) %>%
+  group_by(competition, competitor) %>%
+  arrange(desc(shot_put)) %>%
+  head(3))
+
+
+
+```
+  
+## 5 What was the average points for competitors who ran the 400m in less than 50 seconds vs. those than ran 400m in more than 50 seconds?
+
+```{r}
+rbind(decathlon_data  %>%
+    filter(x400m < 50) %>%
+    summarise(round(mean(points),2 )) %>%
+    distinct() %>%
+    paste( " average points where 400m < 50 secs"),
+  decathlon_data  %>%
+    filter(x400m >= 50) %>%
+    summarise( round(mean(points),2)) %>%
+    distinct() %>%
+    paste( " average points where 400m >= 50 secs")
+    )
+
+```
+
+

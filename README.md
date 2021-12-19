@@ -9,6 +9,7 @@ various data files for analysis.
          ## R Project pda_dirty_data
          ## R Notebook pda_dirty_data.Rmd
          ## R_scripts directory
+         ###  read_dirty_data.R reads decathlon rds data file
          ## Data directory - input data
          ## Clean data = cleaned output
          ## Screenshots
