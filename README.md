@@ -15,7 +15,10 @@ various data files for analysis.
          #### Read in the rds file
          #### convert rownames to a column called competitor
          #### convert text to a consistent lower case
-         ###  read_in_candy_data.R
+         ###  read_in_candy_data.R reads dirty candy data and renames columns, 
+              amends data types, turns timestamps to "YYYY" character strings 
+              for 2015, 2016 and 2017.
+              converts country to consistent format.
          ## Data directory - input data
          ## Clean data = cleaned output
          ## Screenshots

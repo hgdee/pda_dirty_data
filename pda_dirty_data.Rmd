@@ -102,6 +102,21 @@ candy_data_1
 ```
 
 ```{r}
+candy_data_2
+```
+
+```{r}
+candy_data_3
+```
+```{r}
+
+candy_data_3
+
+candy_data_3$which_country_do_you_live_in <- str_replace_all(tolower(candy_data_3$which_country_do_you_live_in), c("usa" ="USA", "united states" = "USA", "united states of america" = "USA","america" = "USA","usa! usa! usa!" = "USA", "USA! USA! USA!" = "USA", "u.s." = "USA", "us" = "USA", "sub-canadian north USA... 'merica" = "USA", "USA of USA" = "USA", "the best one - USA" = "USA","murica" = "USA") )
+
+names(candy_data_3)
 names(candy_data_1)
+names(candy_data_2)
+
 ```
 
