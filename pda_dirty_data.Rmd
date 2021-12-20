@@ -83,8 +83,11 @@ rbind(decathlon_data  %>%
     summarise( round(mean(points),2)) %>%
     distinct() %>%
     paste( " average points where 400m >= 50 secs")
-    )
+)
 
 ```
+
+# 1.4 Task 4 - Halloween Candy Data
+The data is in files boing-boing-candy-2015.xlxs, boing-boing-candy-2016.xlxs and boing-boing-candy-2017.xlxs. Bear in mind that this is trickier compared with tasks 1, 2 & 3.
 
 
