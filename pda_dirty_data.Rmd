@@ -15,6 +15,7 @@ library(janitor)
 library(stringr)
 library(assertr)
 library(testthat)
+library(readxl)
 ```
 
 1 MVP
@@ -90,4 +91,17 @@ rbind(decathlon_data  %>%
 # 1.4 Task 4 - Halloween Candy Data
 The data is in files boing-boing-candy-2015.xlxs, boing-boing-candy-2016.xlxs and boing-boing-candy-2017.xlxs. Bear in mind that this is trickier compared with tasks 1, 2 & 3.
 
+```{r}
+
+source(here::here("R_scripts/read_in_candy_data.R"))
+```
+
+```{r}
+candy_data_1
+
+```
+
+```{r}
+names(candy_data_1)
+```
 
