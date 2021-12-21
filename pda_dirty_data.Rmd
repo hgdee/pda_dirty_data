@@ -94,29 +94,44 @@ The data is in files boing-boing-candy-2015.xlxs, boing-boing-candy-2016.xlxs an
 ```{r}
 
 source(here::here("R_scripts/read_in_candy_data.R"))
-```
 
-```{r}
-candy_data_1
 
-```
-
-```{r}
-candy_data_2
-```
-
-```{r}
-candy_data_3
 ```
 ```{r}
+j <- 1
+for(i in 1:nrow(candy_data_3)) {
+  
+    
+      candy_data_3$which_country_do_you_live_in[i] =  
+        candy_data_1$which_country_do_you_live_in[j]
+      if(j == nrow(candy_data_1)){
+        
+          #We need to reset the candy_data_1 index
+          j <- 1
+          
+      } else {
+        
+          j <- j + 1
+          
+      }
 
-candy_data_3
+}
+```
 
-candy_data_3$which_country_do_you_live_in <- str_replace_all(tolower(candy_data_3$which_country_do_you_live_in), c("usa" ="USA", "united states" = "USA", "united states of america" = "USA","america" = "USA","usa! usa! usa!" = "USA", "USA! USA! USA!" = "USA", "u.s." = "USA", "us" = "USA", "sub-canadian north USA... 'merica" = "USA", "USA of USA" = "USA", "the best one - USA" = "USA","murica" = "USA") )
 
-names(candy_data_3)
-names(candy_data_1)
-names(candy_data_2)
+```{r}
+candy_data_3 %>%
+  group_by(which_country_do_you_live_in)  %>%
+  count() %>%
+  arrange(desc(n))
 
 ```
+
+
+```{r}
+candy_data_3 %>% filter(which_country_do_you_live_in == "usa")  %>%
+  count()
+```
+
+
 
