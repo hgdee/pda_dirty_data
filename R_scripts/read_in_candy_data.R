@@ -41,6 +41,9 @@ for(i in 1:nrow(candy_data_3)) {
   
   candy_data_3$which_country_do_you_live_in[i] =  
     candy_data_1$which_country_do_you_live_in[j]
+  
+  candy_data_3$which_state_province_county_do_you_live_in =  
+    candy_data_1$which_state_province_county_do_you_live_in[j]
   if(j == nrow(candy_data_1)){
     
     #We need to reset the candy_data_1 index
@@ -53,6 +56,8 @@ for(i in 1:nrow(candy_data_3)) {
   }
   
 }
+
+# We need to drop columns that have nothing to do with our analysis
 
 
 # Convert age to numeric

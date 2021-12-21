@@ -97,27 +97,10 @@ source(here::here("R_scripts/read_in_candy_data.R"))
 
 
 ```
-```{r}
-j <- 1
-for(i in 1:nrow(candy_data_3)) {
-  
-    
-      candy_data_3$which_country_do_you_live_in[i] =  
-        candy_data_1$which_country_do_you_live_in[j]
-      if(j == nrow(candy_data_1)){
-        
-          #We need to reset the candy_data_1 index
-          j <- 1
-          
-      } else {
-        
-          j <- j + 1
-          
-      }
 
-}
-```
-
+## Output to show valid which_country_do_you_live_in data
+    2015 was populated using 2016 residence data and looping to populate
+    the larger data set.
 
 ```{r}
 candy_data_3 %>%
@@ -127,11 +110,56 @@ candy_data_3 %>%
 
 ```
 
+# Now the three years of data need to be merged. 
+```{r}
+
+drop_cols_list <- c("^please","^which", "^sourpatch", "^spotted_dick", "^those",
+                    "^vials", "^white", "^whole", "^guess", "^betty", "^that",
+                    "^what", "^do", "^when", "^york", "^cash", "^glow", "^broken",
+                    "^fuzzy", "^dental", "^candy_that_is", "^creepy", "^hugs",
+                    "^peterson", "^generic", "^sourpatch")
+
+  
+  candy_data_1 <- candy_data_1[, -grep("^please", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^which", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^sourpatch", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^spotted_dick", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^those", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^vials", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^white", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^whole", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^guess", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^betty", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^that", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^what", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^do", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^when", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^cash", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^york", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^glow", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^broken", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^fuzzy", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^dental", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^candy_that_is", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^creepy", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^hugs", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^generic", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("^person", names(candy_data_1))]
+  candy_data_1 <- candy_data_1[, -grep("the_board_game", names(candy_data_1))]
+ 
+   
+names(candy_data_1)
+
+
+```
 
 ```{r}
-candy_data_3 %>% filter(which_country_do_you_live_in == "usa")  %>%
-  count()
+# candy_data <- merge(candy_data_1, candy_data_2, by = which_country_do_you_live_in)
+
 ```
+
+
+
 
 
 
