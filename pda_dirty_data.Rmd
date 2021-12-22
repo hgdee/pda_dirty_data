@@ -191,7 +191,37 @@ pivot_candy %>%
 
 
 
+## 4 How many people rated Starburst as despair?
+
+```{r}
+pivot_candy %>% 
+      group_by(name)  %>%
+      filter(toupper( name) == "STARBURST" & value == "DESPAIR") %>%
+      select(name,value) %>%
+      count() 
+```
+
+# For the next three questions, count despair as -1, joy as +1 and meh as 0.
+
+## 6 (?) What was the most popular candy bar by this rating system for each gender in the dataset?
+
+```{r}
+pivot_candy[pivot_candy == "JOY"] <-     "1"
+pivot_candy[pivot_candy == "MEH"] <-     "0"
+pivot_candy[pivot_candy == "DESPAIR"] <- "-1"
+```
 
 
+```{r}
+
+pivot_candy %>% 
+      select(your_gender, name, as.integer(value))   %>%
+      group_by(name)              %>%
+      drop_na(your_gender)               %>%
+      summarise(name ) %>%
+      arrange( name,  desc(sum(value)) )
+
+
+```
 
 
