@@ -19,6 +19,9 @@ various data files for analysis.
               amends data types, turns timestamps to "YYYY" character strings 
               for 2015, 2016 and 2017.
               converts country to consistent format.
-         ## Data directory - input data
-         ## Clean data = cleaned output
+         ###  drop_cols_and_merge.R takes the three years of data and 
+              drops irrelevant columns and reorders non-candy columns 
+              and then merges the resultant data sets
+         ## Data directory - input data with various data files, some unused
+         ## Cleaned_data   - cleaned output saved for transparency and othe use
          ## Screenshots

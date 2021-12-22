@@ -10,7 +10,8 @@ drop_cols_list <- c("please","which", "sourpatch", "spotted_dick", "those",
                     "mini_bags","swedish_fish", "three_musketeers", "bonkers_the_board_game",
                     "lapel_pins", "bottle_caps","peeps", "mike_and_ike", "mr_goodbar",
                     "runts", "sea_salt", "mint_leaves", "kale_smoothie", "heath_bar",
-                    "joy_joy", "peanut_butter_jars","mint_julep","nerds")
+                    "joy_joy", "peanut_butter_jars","mint_julep","nerds", "chardonnay",
+                    "vicodin")
 
 hit_list <- candy_data_1 %>% 
   select(starts_with(drop_cols_list))
@@ -46,4 +47,8 @@ names(which(colSums(is.na(second_merge)) == nrow(second_merge)))
 # the data is now cleaned-ish and ready to use.
 candy_data <- second_merge
 
+# Change the order so that all non-candy columns are first - move gender
+candy_data <- candy_data %>% select (1,2,3, 56, everything())
 
+# Back up the data at this stage
+write_rds(candy_data,here::here("Cleaned_data/candy_data.rds"))

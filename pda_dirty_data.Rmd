@@ -122,9 +122,72 @@ glimpse(candy_data)
 
 ```
 
+# 1.4.2 Analysis questions
+
+## 1. What is the total number of candy ratings given across the three years. (number of candy ratings, not number of raters. Don’t count missing values)
+
+```{r}
+candy_data  %>%
+    pivot_longer(cols=5:79, values_drop_na = TRUE) %>%
+    count(value) %>%
+    arrange(desc(n))
+  
+  
+```
+## 2. What was the average age of people who are going out trick or treating and the average age of people not going trick or treating?
+
+```{r}
 
 
+candy_data %>%
+  select(are_you_going_actually_going_trick_or_treating_yourself, 
+          how_old_are_you) %>%
+  drop_na() %>%
+  group_by(are_you_going_actually_going_trick_or_treating_yourself) %>%
+  summarise(mean = round(mean(how_old_are_you)))
 
+  # as many ages are implausible restrict the age to 5-100
+candy_data %>%
+  select(are_you_going_actually_going_trick_or_treating_yourself, 
+          how_old_are_you) %>%
+  filter(how_old_are_you >= 5 & how_old_are_you <= 100) %>%
+  drop_na() %>%
+  group_by(are_you_going_actually_going_trick_or_treating_yourself) %>%
+  summarise(mean = round(mean(how_old_are_you)))
+```
+
+## 3. For each of joy, despair and meh, which candy bar received the most of these ratings?
+
+```{r}
+
+pivot_candy <- candy_data  %>%
+    pivot_longer(cols=5:79, values_drop_na = TRUE)
+
+pivot_candy %>% 
+      group_by(name)  %>%
+      filter(value == "DESPAIR") %>%
+      select(name,value)  %>%
+      count() %>%
+      arrange(desc(n)) %>%
+      head(1)
+
+pivot_candy %>% 
+      group_by(name)  %>%
+      filter(value == "MEH") %>%
+      select(name,value)  %>%
+      count() %>%
+      arrange(desc(n)) %>%
+      head(1)
+
+# Not sure "any_full_sized_candy_bar" counts so headed 2
+pivot_candy %>% 
+      group_by(name)  %>%
+      filter(value == "JOY") %>%
+      select(name,value)  %>%
+      count() %>%
+      arrange(desc(n)) %>%
+      head(2)
+```
 
 
 
