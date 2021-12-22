@@ -1,5 +1,5 @@
 ---
-title: "D12 weekend homework week 2"
+title: "D12 Dirty Data Project"
 output:
   html_document: 
     number_sections: yes
@@ -109,45 +109,21 @@ candy_data_3 %>%
   arrange(desc(n))
 
 ```
-
+# Now the three years of data need to be merged. 
 
 ```{r}
 
-# List of 'starts with' values gained by examining data sets
-drop_cols_list <- c("please","which", "sourpatch", "spotted_dick", "those",
-                    "vials", "white", "whole", "guess", "betty", "that",
-                     "what", "do", "when", "york", "cash", "glow", "broken",
-                    "fuzzy", "dental", "candy_that_is", "creepy", "hugs",
-                    "peterson", "generic", "sourpatch", "person", "please",
-                    "anonymous")
+source(here::here("R_scripts/drop_cols_and_merge.R"))
 
-hit_list <- candy_data_1 %>% 
-                select(starts_with(drop_cols_list))
-
-# Set up operator to exclude
-`%ni%` <- Negate(`%in%`)
-  
-
-candy_data_1 <- subset(candy_data_1,select = names(candy_data_1) %ni% (names(hit_list)))
-
-hit_list <-candy_data_2 %>% 
-                select(starts_with(drop_cols_list))
-candy_data_2 <- subset(candy_data_2,select = names(candy_data_2) %ni% (names(hit_list)))
-
-
-
-hit_list <-candy_data_3 %>% 
-                select(starts_with(drop_cols_list))
-candy_data_3 <- subset(candy_data_3,select = names(candy_data_3) %ni% (names(hit_list)))
-
-# Try a merge on cleaner data sets
-first_merge <- merge(candy_data_1,candy_data_2)
-glimpse(candy_data_1)
-names(candy_data_1) %>% sort
-names(candy_data_2) %>% sort
 ```
 
-# Now the three years of data need to be merged. 
+```{r}
+glimpse(candy_data)
+
+```
+
+
+
 
 
 
