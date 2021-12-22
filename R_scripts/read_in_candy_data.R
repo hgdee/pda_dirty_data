@@ -58,6 +58,7 @@ for(i in 1:nrow(candy_data_3)) {
 }
 
 # We need to drop columns that have nothing to do with our analysis
+# couldn't find a neat programmatic way to do this
 
 
 # Convert age to numeric
