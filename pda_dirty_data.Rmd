@@ -102,13 +102,7 @@ source(here::here("R_scripts/read_in_candy_data.R"))
     2015 was populated using 2016 residence data and looping to populate
     the larger data set.
 
-```{r}
-candy_data_3 %>%
-  group_by(which_country_do_you_live_in)  %>%
-  count() %>%
-  arrange(desc(n))
 
-```
 # Now the three years of data need to be merged. 
 
 ```{r}
@@ -128,7 +122,7 @@ glimpse(candy_data)
 
 ```{r}
 candy_data  %>%
-    pivot_longer(cols=5:79, values_drop_na = TRUE) %>%
+    pivot_longer(cols=5:80, values_drop_na = TRUE) %>%
     count(value) %>%
     arrange(desc(n))
   
@@ -161,29 +155,31 @@ candy_data %>%
 ```{r}
 
 pivot_candy <- candy_data  %>%
-    pivot_longer(cols=5:79, values_drop_na = TRUE)
+    pivot_longer(cols=5:80,   names_to = "candy_bar_name", 
+                              values_to = "customer_satisfaction",
+                              values_drop_na = TRUE)
 
 pivot_candy %>% 
-      group_by(name)  %>%
-      filter(value == "DESPAIR") %>%
-      select(name,value)  %>%
+      group_by(candy_bar_name)  %>%
+      filter(customer_satisfaction == "DESPAIR") %>%
+      select(candy_bar_name,customer_satisfaction)  %>%
       count() %>%
       arrange(desc(n)) %>%
       head(1)
 
 pivot_candy %>% 
-      group_by(name)  %>%
-      filter(value == "MEH") %>%
-      select(name,value)  %>%
+      group_by(candy_bar_name)  %>%
+      filter(customer_satisfaction == "MEH") %>%
+      select(candy_bar_name, customer_satisfaction)  %>%
       count() %>%
       arrange(desc(n)) %>%
       head(1)
 
 # Not sure "any_full_sized_candy_bar" counts so headed 2
 pivot_candy %>% 
-      group_by(name)  %>%
-      filter(value == "JOY") %>%
-      select(name,value)  %>%
+      group_by(candy_bar_name)  %>%
+      filter(customer_satisfaction == "JOY") %>%
+      select(candy_bar_name, customer_satisfaction)  %>%
       count() %>%
       arrange(desc(n)) %>%
       head(2)
@@ -195,9 +191,10 @@ pivot_candy %>%
 
 ```{r}
 pivot_candy %>% 
-      group_by(name)  %>%
-      filter(toupper( name) == "STARBURST" & value == "DESPAIR") %>%
-      select(name,value) %>%
+      group_by(candy_bar_name)  %>%
+      filter(toupper( candy_bar_name) == "STARBURST" & 
+                      customer_satisfaction == "DESPAIR") %>%
+      select(candy_bar_name, customer_satisfaction) %>%
       count() 
 ```
 
@@ -209,17 +206,33 @@ pivot_candy %>%
 pivot_candy[pivot_candy == "JOY"] <-     "1"
 pivot_candy[pivot_candy == "MEH"] <-     "0"
 pivot_candy[pivot_candy == "DESPAIR"] <- "-1"
+pivot_candy$customer_satisfaction  <- as.integer(pivot_candy$customer_satisfaction)
+# As 'other' and 'I'd rather not say' look to be the same then combine
+pivot_candy[pivot_candy == "I'd rather not say"] <-     "Other"
 ```
 
 
 ```{r}
 
+# num of gender type
+gender_num <- pivot_candy %>% 
+              filter(!is.na(your_gender))  %>%
+              distinct(your_gender) %>%
+              count()
+
 pivot_candy %>% 
-      select(your_gender, name, as.integer(value))   %>%
-      group_by(name)              %>%
-      drop_na(your_gender)               %>%
-      summarise(name ) %>%
-      arrange( name,  desc(sum(value)) )
+      select(candy_bar_name, your_gender, customer_satisfaction)  %>%
+      filter(!is.na(your_gender))   %>%
+      group_by(your_gender, candy_bar_name)  %>%
+      mutate( customer_satisfaction_total = sum(customer_satisfaction)) %>%
+      summarise(unique(your_gender),
+                unique(candy_bar_name),
+                customer_satisfaction_total) %>%
+      arrange(  desc(customer_satisfaction_total),
+                your_gender,
+                candy_bar_name)
+
+
 
 
 ```
