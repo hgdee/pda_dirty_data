@@ -13,8 +13,6 @@ library(tidyverse)
 library(here)
 library(janitor)
 library(stringr)
-library(assertr)
-library(testthat)
 library(readxl)
 ```
 
@@ -203,38 +201,36 @@ pivot_candy %>%
 ## 6 (?) What was the most popular candy bar by this rating system for each gender in the dataset?
 
 ```{r}
+
+
 pivot_candy[pivot_candy == "JOY"] <-     "1"
 pivot_candy[pivot_candy == "MEH"] <-     "0"
 pivot_candy[pivot_candy == "DESPAIR"] <- "-1"
-pivot_candy$customer_satisfaction  <- as.integer(pivot_candy$customer_satisfaction)
-# As 'other' and 'I'd rather not say' look to be the same then combine
-pivot_candy[pivot_candy == "I'd rather not say"] <-     "Other"
+pivot_candy$customer_satisfaction <- as.numeric(pivot_candy$customer_satisfaction)
+
+
+# As 'other' and 'I'd rather not say' look to be the same then combine 
+# NA's are not converted
+pivot_candy[pivot_candy == "I'd rather not say"] <- "Other"
 ```
+
 
 
 ```{r}
 
-# num of gender type
-gender_num <- pivot_candy %>% 
-              filter(!is.na(your_gender))  %>%
-              distinct(your_gender) %>%
-              count()
-
 pivot_candy %>% 
-      select(candy_bar_name, your_gender, customer_satisfaction)  %>%
-      filter(!is.na(your_gender))   %>%
-      group_by(your_gender, candy_bar_name)  %>%
-      mutate( customer_satisfaction_total = sum(customer_satisfaction)) %>%
-      summarise(unique(your_gender),
-                unique(candy_bar_name),
-                customer_satisfaction_total) %>%
-      arrange(  desc(customer_satisfaction_total),
-                your_gender,
-                candy_bar_name)
+      select(your_gender, candy_bar_name, customer_satisfaction) %>%
+      group_by(groups(your_gender, candy_bar_name)) %>%
+      summarise(customer_satisfaction, funs = "sum") %>%
+      arrange( customer_satisfaction) 
 
 
 
 
+  
 ```
+
+
+
 
 
