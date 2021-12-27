@@ -219,8 +219,9 @@ pivot_candy[pivot_candy == "I'd rather not say"] <- "Other"
 ```{r}
 
 candy_sum <- aggregate(pivot_candy$customer_satisfaction, 
-           by=list(your_gender=pivot_candy$your_gender,
-          candy_bar_name=pivot_candy$candy_bar_name), FUN=sum)  
+              by=list(your_gender=pivot_candy$your_gender,
+              candy_bar_name=pivot_candy$candy_bar_name), 
+              FUN=sum)  
 
 rbind(
   candy_sum %>%
@@ -238,6 +239,14 @@ rbind(
 ```
 
 
+
+# 2 Extensions
+
+## The data is available in the file rwa.csv. This dataset comes from https://openpsychometrics.org/_rawdata/. It measures how people score on a measure called Right Wing Authoritarianism, or RWA.
+
+### 2.1.1 Some cleaning hints
+You’ll need to calculate people’s overall RWA score. This is found from the mean of questions 3 to 22. Questions 1 and 2 are warm up questions. Note that the following questions are reverse scored: 4, 6, 8, 9, 11, 13, 15, 18, 20, 21.
+Read the file rwa_codebook.txt to understand how to clean this data. [Hint: you may want to recode some of the variables to give their values meaning].
 
 
 
