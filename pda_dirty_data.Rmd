@@ -214,7 +214,7 @@ pivot_candy$customer_satisfaction <- as.numeric(pivot_candy$customer_satisfactio
 pivot_candy[pivot_candy == "I'd rather not say"] <- "Other"
 ```
 
-
+## As any full sized candy bar may not qualify - as it is not a brand - offer 2
 
 ```{r}
 
@@ -226,15 +226,15 @@ rbind(
   candy_sum %>%
       arrange(desc(x), candy_bar_name, your_gender)  %>%
       filter(your_gender == "Female")  %>%
-       head(1),
+       head(2),
   candy_sum %>%
       arrange(desc(x), candy_bar_name, your_gender)  %>%
       filter(your_gender == "Male")  %>%
-      head(1),
+      head(2),
   candy_sum %>%
       arrange(desc(x), candy_bar_name, your_gender)  %>%
       filter(your_gender == "Other") %>%
-      head(1))
+      head(2))
 ```
 
 
