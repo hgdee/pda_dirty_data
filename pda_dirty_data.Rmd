@@ -254,4 +254,32 @@ You’ll need to calculate people’s overall RWA score. This is found from the 
 Read the file rwa_codebook.txt to understand how to clean this data. [Hint: you may want to recode some of the variables to give their values meaning].
 
 
+# Read in the data
+```{r}
+source(here::here("R_scripts/read_in_rwa_data.R"))
+```
+
+```{r}
+glimpse(rwa_data)
+```
+
+
+```{r}
+
+
+for (reverse_score in c(4,6,8,9,11,13,15,18,20,21)) {
+  
+  reverse_score <- sprintf("q%d", reverse_score)
+
+  rwa_data[reverse_score][rwa_data[reverse_score] == 9]  <- 1
+  rwa_data[reverse_score][rwa_data[reverse_score] == 8]  <- 2
+  rwa_data[reverse_score][rwa_data[reverse_score] == 7]  <- 3
+  rwa_data[reverse_score][rwa_data[reverse_score] == 6]  <- 4
+  rwa_data[reverse_score][rwa_data[reverse_score] == 4]  <- 6
+  rwa_data[reverse_score][rwa_data[reverse_score] == 3]  <- 7
+  rwa_data[reverse_score][rwa_data[reverse_score] == 2]  <- 8
+  rwa_data[reverse_score][rwa_data[reverse_score] == 1]  <- 9
+  
+}
+```
 

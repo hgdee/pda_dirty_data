@@ -8,8 +8,13 @@ various data files for analysis.
 # Files:  
          # R Project pda_dirty_data  - runs the whole show
          ## R Notebook pda_dirty_data.Rmd 
-         ### Answers the analysis questions in Dirty Data Project Question 1
-         ### Answers the analysis questions in Dirty Data project Question 4
+         ### Answers to the analysis questions in Dirty Data Project Question 1
+         ### Answers to the analysis questions in Dirty Data project Question 4
+          your_gender values were consolidated to "Other" and NA's were ignored
+          'any_full_sized_candy_bar' was considered a valid name as it had
+          informational value - but as it was not a brand name answers where 
+          it was the most popular were offered with two values, 
+          the other being KitKat
          ## R_scripts directory
          ###  read_dirty_data.R reads decathlon rds data file
          #### Read in the rds file
@@ -24,6 +29,9 @@ various data files for analysis.
          ###  drop_cols_and_merge.R takes the three years of data and 
               drops irrelevant columns and reorders non-candy columns 
               and then merges the resultant data sets
+         ###  read_in_rwa_data.R gets rwa data 
+              drops Q1 and Q2 as they are warm up questions.
+              Use the psych package to reverse scores on identified questions
          ## Data directory - input data with various data files, some unused
          ## Cleaned_data   - cleaned output saved for transparency and othe use
          ## Screenshots
