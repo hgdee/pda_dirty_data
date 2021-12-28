@@ -218,24 +218,29 @@ pivot_candy[pivot_candy == "I'd rather not say"] <- "Other"
 
 ```{r}
 
-candy_sum <- aggregate(pivot_candy$customer_satisfaction, 
-              by=list(your_gender=pivot_candy$your_gender,
-              candy_bar_name=pivot_candy$candy_bar_name), 
-              FUN=sum)  
+candy_sum <- pivot_candy %>%
+  select(your_gender, candy_bar_name, customer_satisfaction)  %>%
+  group_by(your_gender, candy_bar_name) 
 
-rbind(
-  candy_sum %>%
-      arrange(desc(x), candy_bar_name, your_gender)  %>%
-      filter(your_gender == "Female")  %>%
-       head(2),
-  candy_sum %>%
-      arrange(desc(x), candy_bar_name, your_gender)  %>%
-      filter(your_gender == "Male")  %>%
+candy_sum <- candy_sum %>%
+  filter(!is.na(your_gender)) %>%
+  filter(!is.na(candy_bar_name)) %>%
+  summarise(sum = sum(customer_satisfaction))  %>%
+  arrange(desc(sum))
+
+rbind( 
+    candy_sum %>%
+      filter(your_gender == "Female") %>%
       head(2),
-  candy_sum %>%
-      arrange(desc(x), candy_bar_name, your_gender)  %>%
+    candy_sum %>%
+      filter(your_gender == "Male") %>%
+      head(2),
+    candy_sum %>%
       filter(your_gender == "Other") %>%
-      head(2))
+      head(2)
+)
+
+
 ```
 
 
