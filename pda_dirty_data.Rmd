@@ -15,6 +15,8 @@ library(janitor)
 library(stringr)
 library(readxl)
 library(psych)
+library(assertr)
+library(testthat)
 ```
 
 1 MVP
@@ -333,6 +335,33 @@ Under 18
 
 ```{r}
 
+rwa_data %>% 
+  select(age, rwa_score) %>%
+  mutate(age_cuts = cut(age, c(0,18,25,26,40,41,60))) %>%
+  filter(!is.na(age_cuts)) %>%
+  group_by(age_cuts) %>%
+  summarise(avg_rwa_score =round(mean(rwa_score)))
+
+
 ```
 
-Over 60
+# 2.2 Task 6 - Dog owners survey
+The data is available in the file dog_survey.csv It is the results of a survey filled in by dog owners about their dogs.
+
+# Read in the data
+```{r}
+source(here::here("R_scripts/read_in_dog_survey.R"))
+
+```
+
+
+```{r}
+glimpse(dog_survey)
+
+```
+
+```{r}
+
+
+```
+

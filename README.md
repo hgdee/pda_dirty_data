@@ -2,10 +2,11 @@
  Dirty data project
 ## Howard Davies PDA for CodeClan 19/12/2021
 
+
 This project is intended to read, clean up and analyse 
 various data files for analysis. 
 
-# Files:  
+# Files used 
          # R Project pda_dirty_data  - runs the whole show
          ## R Notebook pda_dirty_data.Rmd 
          ### Answers to the analysis questions in Dirty Data Project Question 1
@@ -29,10 +30,13 @@ various data files for analysis.
          ###  drop_cols_and_merge.R takes the three years of data and 
               drops irrelevant columns and reorders non-candy columns 
               and then merges the resultant data sets
-         ###  read_in_rwa_data.R gets rwa data 
+         ###  read_in_rwa_data.R gets rwa data and
               drops Q1 and Q2 as they are warm up questions.
-              Use the psych package to reverse scores on identified questions.
-              calculate rwa_score of required columns using across and rowSums
+              Use the psych package to reverse scores on Q3-Q22.
+              calculate rwa_score.
+         ###  read_in_dog_survey.R get dog_survey csv and removes duplicates,
+              empty cols and removes currency signs that would inhibit 
+              calculations.
          ## Data directory - input data with various data files, some unused
          ## Cleaned_data   - cleaned output saved for transparency and othe use
          ## Screenshots
