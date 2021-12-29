@@ -297,5 +297,42 @@ rwa_data %>%
 
 ```{r}
 
+rwa_data %>%
+  select(urban, familysize) %>%
+  filter(!urban == 0) %>%
+  group_by(urban) %>%
+  summarise( round(mean(familysize)))
 ```
 
+## 4  What’s the average time to take the test for each education level?
+```{r}
+rwa_data %>%
+  select(education, testelapse) %>%
+  filter(!education == 0) %>%
+  group_by(education) %>%
+  summarise( round(mean(testelapse)))
+
+```
+## 5. Create a plot of results of question 4.
+
+```{r}
+data <- rwa_data %>%
+  select(education, testelapse) %>%
+  filter(!education == 0) %>%
+  group_by(education) %>%
+  summarise( round(mean(testelapse)))
+
+plot(data)
+```
+
+## 6. What’s the average RWA score for people aged
+Under 18
+18 to 25
+26 to 40
+41 to 60
+
+```{r}
+
+```
+
+Over 60

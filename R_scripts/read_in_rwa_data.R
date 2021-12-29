@@ -35,3 +35,12 @@ rwa_data$gender[rwa_data$gender == 3]  <- "Other"
 rwa_data$hand[rwa_data$hand == 1]  <- "Right"
 rwa_data$hand[rwa_data$hand == 2]  <- "Left"
 rwa_data$hand[rwa_data$hand == 3]  <- "Both"
+
+rwa_data$urban[rwa_data$urban == 1]  <- "Rural"
+rwa_data$urban[rwa_data$urban == 2]  <- "Suburban"
+rwa_data$urban[rwa_data$urban == 3]  <- "Urban"
+
+rwa_data$education[rwa_data$education == 1]  <- "Less than high school"
+rwa_data$education[rwa_data$education == 2]  <- "High school"
+rwa_data$education[rwa_data$education == 3]  <- "University degree"
+rwa_data$education[rwa_data$education == 4]  <- "Graduate degree"
