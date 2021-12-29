@@ -26,3 +26,12 @@ rwa_data_wrangled <- rwa_data_wrangled %>%
                                    rowSums(across(starts_with("q")), na.rm = T))
 
 rwa_data <- rwa_data_wrangled
+
+# Convert some of the columns data
+rwa_data$gender[rwa_data$gender == 1]  <- "Male"
+rwa_data$gender[rwa_data$gender == 2]  <- "Female"
+rwa_data$gender[rwa_data$gender == 3]  <- "Other"
+
+rwa_data$hand[rwa_data$hand == 1]  <- "Right"
+rwa_data$hand[rwa_data$hand == 2]  <- "Left"
+rwa_data$hand[rwa_data$hand == 3]  <- "Both"

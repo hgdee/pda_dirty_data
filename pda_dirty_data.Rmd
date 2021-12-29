@@ -268,12 +268,34 @@ rwa_data %>%
   head(2)
 ```
 
-#  Analysis starts
+
+#  2.1.2 Analysis questions
+## 1. What’s the average RWA score for each gender?
 ```{r}
+
+
+rwa_data %>%
+  select(gender, rwa_score) %>%
+  filter(!gender == 0) %>%
+  group_by(gender) %>%
+  summarise( mean(rwa_score)) 
+ 
 
 
 ```
 
+##  2. What’s the average RWA score for left handed people vs. right handed people.
 
+```{r}
+rwa_data %>%
+  select(hand, rwa_score) %>%
+  filter(!hand == 0) %>%
+  group_by(hand) %>%
+  summarise( mean(rwa_score)) 
+```
+## 3. What’s the average family size for each type of childhood?
 
+```{r}
+
+```
 
