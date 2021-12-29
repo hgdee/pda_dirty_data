@@ -13,10 +13,16 @@ keys <- c(1, -1, 1, -1, 1, -1, -1, 1, -1, 1, -1, 1, -1, 1, 1, -1, 1, -1, -1, 1)
 rwa_q1_q20 <- reverse.code(keys, rwa_data[1:20]) 
 
 
-# Calculate the means
-rwa_q1_q20$rwa_score <- rowMeans(rwa_q1_q20, na.rm = TRUE)
+# Calculate the scores
+#rwa_q1_q20 <- rwa_q1_20 %>%
+#               mutate(rwa_score = sum(.))
+
 
 # Now recombine the reversed columns with the original data
-#rwa_data <- cbind(rwa_q1_q20, rwa_data[21:88])
+rwa_data_wrangled <- cbind( rwa_data[21:88], rwa_q1_q20)
 
+rwa_data_wrangled <- rwa_data_wrangled %>%
+                            mutate(rwa_score = 
+                                   rowSums(across(starts_with("q")), na.rm = T))
 
+rwa_data <- rwa_data_wrangled

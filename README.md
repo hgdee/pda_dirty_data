@@ -31,7 +31,8 @@ various data files for analysis.
               and then merges the resultant data sets
          ###  read_in_rwa_data.R gets rwa data 
               drops Q1 and Q2 as they are warm up questions.
-              Use the psych package to reverse scores on identified questions
+              Use the psych package to reverse scores on identified questions.
+              calculate rwa_score of required columns using across and rowSums
          ## Data directory - input data with various data files, some unused
          ## Cleaned_data   - cleaned output saved for transparency and othe use
          ## Screenshots
