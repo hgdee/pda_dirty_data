@@ -360,8 +360,66 @@ glimpse(dog_survey)
 
 ```
 
+# 2.2.2 Analysis questions
+
+## 1. The client only counts a valid email address as one ending in ‘.com’. How many survey results have a valid email address.
 ```{r}
+dog_survey %>%
+ select(email, contains(".com")) %>%
+  summarise(sum(n()))
+  
+```
 
 
+## 2. What’s the average amount spent on dog food for each dog size.
+
+```{r}
+"%ni%" <- Negate("%in%")
+dog_sums <- dog_survey %>%
+              filter(!is.na(amount_spent_on_dog_food)) %>%
+              filter(dog_size %ni% c("NA", "NO","N/A")) %>%
+              group_by(dog_size) 
+dog_sums %>% 
+  summarise(mean(amount_spent_on_dog_food))
+```
+
+## 3. For owners whose surname starts with a letter in the second half of the alphabet (N onwards) what is the average age of their dog?
+
+```{r}
+dog_sums <- dog_survey %>%
+  filter(substr(last_name,1,1) >= "N") 
+
+dog_sums %>%
+  summarise(mean(dog_age))
+```
+
+## 4. The dog_age column is the age in dog years. If the conversion is 1 human year = 6 dog years, then what is the average human age for dogs of each gender?
+
+```{r}
+dog_sums <- dog_survey %>%
+              filter(!is.na(dog_age)) %>%
+              group_by(dog_gender) 
+
+dog_sums %>%
+  summarise(round(mean(dog_age/6)))
+```
+
+## 5. Create a plot of results of question 4.
+
+```{r}
+dog_sums <- dog_survey %>%
+              filter(!is.na(dog_age)) %>%
+              group_by(dog_gender) 
+
+dog_sums <- dog_sums %>%
+  summarise(round(mean(dog_age/6)))
+colnames(dog_sums) <- c("gender", "age")
+
+dog_years <- table(dog_sums)
+
+
+#barplot(dog_years,  ylim=c(0,10), ylab="mean dog human years age",main="Barplot of Dog Gender v average age")
+
+plot(dog_years,  ylim=c(0,10), ylab="mean dog human years age", main="Barplot of Dog Gender v average age")
 ```
 
