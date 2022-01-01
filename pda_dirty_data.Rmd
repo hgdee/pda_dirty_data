@@ -104,6 +104,7 @@ source(here::here("R_scripts/read_in_candy_data.R"))
     the larger data set.
 
 
+
 # Now the three years of data need to be merged. 
 
 ```{r}
@@ -122,12 +123,12 @@ glimpse(candy_data)
 ## 1. What is the total number of candy ratings given across the three years. (number of candy ratings, not number of raters. Don’t count missing values)
 
 ```{r}
-candy_data  %>%
-    pivot_longer(cols=5:80, values_drop_na = TRUE) %>%
-    count(value) %>%
-    arrange(desc(n))
-  
-  
+candy_long <- candy_data  %>%
+    pivot_longer(cols=6:80, values_drop_na = TRUE) 
+
+   candy_long %>% summarise(sum(n()))
+
+ 
 ```
 ## 2. What was the average age of people who are going out trick or treating and the average age of people not going trick or treating?
 
@@ -154,7 +155,6 @@ candy_data %>%
 ## 3. For each of joy, despair and meh, which candy bar received the most of these ratings?
 
 ```{r}
-
 pivot_candy <- candy_data  %>%
     pivot_longer(cols=5:80,   names_to = "candy_bar_name", 
                               values_to = "customer_satisfaction",
@@ -166,7 +166,8 @@ pivot_candy %>%
       select(candy_bar_name,customer_satisfaction)  %>%
       count() %>%
       arrange(desc(n)) %>%
-      head(1)
+      head(1)  %>%
+      paste(" --- Despair")
 
 pivot_candy %>% 
       group_by(candy_bar_name)  %>%
@@ -174,7 +175,8 @@ pivot_candy %>%
       select(candy_bar_name, customer_satisfaction)  %>%
       count() %>%
       arrange(desc(n)) %>%
-      head(1)
+      head(1) %>%
+      paste(" --- Meh")
 
 # Not sure "any_full_sized_candy_bar" counts so headed 2
 pivot_candy %>% 
@@ -183,7 +185,8 @@ pivot_candy %>%
       select(candy_bar_name, customer_satisfaction)  %>%
       count() %>%
       arrange(desc(n)) %>%
-      head(2)
+      head(1)%>%
+      paste(" --- Joy")
 ```
 
 
@@ -217,7 +220,7 @@ pivot_candy$customer_satisfaction <- as.numeric(pivot_candy$customer_satisfactio
 pivot_candy[pivot_candy == "I'd rather not say"] <- "Other"
 ```
 
-## As any full sized candy bar may not qualify - as it is not a brand - offer 2
+## As any full sized candy bar may not qualify took it out
 
 ```{r}
 
@@ -234,13 +237,13 @@ candy_sum <- candy_sum %>%
 rbind( 
     candy_sum %>%
       filter(your_gender == "Female") %>%
-      head(2),
+      head(1),
     candy_sum %>%
       filter(your_gender == "Male") %>%
-      head(2),
+      head(1),
     candy_sum %>%
       filter(your_gender == "Other") %>%
-      head(2)
+      head(1)
 )
 
 
@@ -275,14 +278,11 @@ rwa_data %>%
 ## 1. What’s the average RWA score for each gender?
 ```{r}
 
-
 rwa_data %>%
   select(gender, rwa_score) %>%
   filter(!gender == 0) %>%
   group_by(gender) %>%
   summarise( mean(rwa_score)) 
- 
-
 
 ```
 
@@ -323,8 +323,8 @@ data <- rwa_data %>%
   filter(!education == 0) %>%
   group_by(education) %>%
   summarise( round(mean(testelapse)))
-
-plot(data)
+education <- table(data)
+plot(education)
 ```
 
 ## 6. What’s the average RWA score for people aged
@@ -341,7 +341,6 @@ rwa_data %>%
   filter(!is.na(age_cuts)) %>%
   group_by(age_cuts) %>%
   summarise(avg_rwa_score =round(mean(rwa_score)))
-
 
 ```
 
@@ -377,7 +376,8 @@ dog_survey %>%
 "%ni%" <- Negate("%in%")
 dog_sums <- dog_survey %>%
               filter(!is.na(amount_spent_on_dog_food)) %>%
-              filter(dog_size %ni% c("NA", "NO","N/A")) %>%
+              filter( dog_size != "NA") %>%
+              filter(dog_size %ni% c( "NO","N/A")) %>%
               group_by(dog_size) 
 dog_sums %>% 
   summarise(mean(amount_spent_on_dog_food))
@@ -386,11 +386,13 @@ dog_sums %>%
 ## 3. For owners whose surname starts with a letter in the second half of the alphabet (N onwards) what is the average age of their dog?
 
 ```{r}
+
 dog_sums <- dog_survey %>%
   filter(substr(last_name,1,1) >= "N") 
 
 dog_sums %>%
   summarise(mean(dog_age))
+
 ```
 
 ## 4. The dog_age column is the age in dog years. If the conversion is 1 human year = 6 dog years, then what is the average human age for dogs of each gender?
@@ -422,4 +424,4 @@ dog_years <- table(dog_sums)
 
 plot(dog_years,  ylim=c(0,10), ylab="mean dog human years age", main="Barplot of Dog Gender v average age")
 ```
-
+End of PDA

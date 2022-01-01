@@ -1,7 +1,8 @@
+# Called from pda_dirty_data.Rmd
 # Handle dropping columns and merging the data
 
 # List of 'starts with' values gained by examining data sets
-drop_cols_list <- c("please","which", "sourpatch", "spotted_dick", "those",
+drop_cols_list <- c("please","which_state","which_day", "sourpatch", "spotted_dick", "those",
                     "vials", "white", "whole", "guess", "betty", "that",
                     "what", "do", "when", "york", "cash", "glow", "broken",
                     "fuzzy", "dental", "candy_that_is", "creepy", "hugs",
@@ -11,7 +12,7 @@ drop_cols_list <- c("please","which", "sourpatch", "spotted_dick", "those",
                     "lapel_pins", "bottle_caps","peeps", "mike_and_ike", "mr_goodbar",
                     "runts", "sea_salt", "mint_leaves", "kale_smoothie", "heath_bar",
                     "joy_joy", "peanut_butter_jars","mint_julep","nerds", "chardonnay",
-                    "vicodin")
+                    "vicodin","any_full_size")
 
 hit_list <- candy_data_1 %>% 
   select(starts_with(drop_cols_list))

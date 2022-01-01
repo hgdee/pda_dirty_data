@@ -1,3 +1,4 @@
+# Called from pda_dirty_data.Rmd
 # Read in the candy data 
 candy_data_1 <- read_excel(here::here("data/candy_ranking_data/boing-boing-candy-2016.xlsx"), na = "NA") %>% 
                           clean_names() 
@@ -31,10 +32,11 @@ candy_data_1$which_country_do_you_live_in <- str_replace_all(tolower(candy_data_
                                                              
 candy_data_2$which_country_do_you_live_in <- str_replace_all(tolower(candy_data_2$which_country_do_you_live_in), country_convert_list)
                                                              
-#  we need to create a column for 2015 - candy_data_3 which has 5630  
-#                                        candy_data_1 1259 
+#  we need to create columns for 2015 - candy_data_3 which has 5630  
+#                             using           candy_data_1 1259 
 # It is assumed that as the data is untouched it is random and reflects 
-# probable 'real' values
+# probable 'real' values. 
+# Also do the missing your_gender field at the same time
 j <- 1
 for(i in 1:nrow(candy_data_3)) {
   
@@ -42,8 +44,8 @@ for(i in 1:nrow(candy_data_3)) {
   candy_data_3$which_country_do_you_live_in[i] =  
     candy_data_1$which_country_do_you_live_in[j]
   
-  candy_data_3$which_state_province_county_do_you_live_in =  
-    candy_data_1$which_state_province_county_do_you_live_in[j]
+  candy_data_3$your_gender =  
+    candy_data_1$your_gender[j]
   if(j == nrow(candy_data_1)){
     
     #We need to reset the candy_data_1 index
@@ -57,9 +59,8 @@ for(i in 1:nrow(candy_data_3)) {
   
 }
 
-# We need to drop columns that have nothing to do with our analysis
-# couldn't find a neat programmatic way to do this
-
+# Change the column order for candy_data_3 
+candy_data_3 <- candy_data_3[,c(1,4,126,2,125, 5:124)]
 
 # Convert age to numeric
 candy_data_1$how_old_are_you <- as.integer(candy_data_1$how_old_are_you)
