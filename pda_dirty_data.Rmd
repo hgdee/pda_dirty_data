@@ -162,14 +162,14 @@ pivot_candy <- candy_data  %>%
                               values_to = "customer_satisfaction",
                               values_drop_na = TRUE)
 
-#pivot_candy_group <- pivot_candy %>% 
-#      select(candy_bar_name,   customer_satisfaction)  %>%
-#      group_by( customer_satisfaction) %>%
-#      mutate(candy_bar_num = n()) 
+# pivot_candy_group <- pivot_candy %>% 
+   #  select(candy_bar_name,   customer_satisfaction)  %>%
+  #   group_by( customer_satisfaction) %>%
+ #     mutate(candy_bar_num = n()) 
     
-#pivot_candy_group %>%
-#  arrange(desc(customer_satisfaction), desc(candy_bar_num)) %>%
-#  summarise(customer_satisfaction, candy_bar_name, candy_bar_num)
+ #pivot_candy_group %>%
+#    arrange(customer_satisfaction, candy_bar_name, candy_bar_num) %>%
+#    top_n(customer_satisfaction, n=1)
 
 pivot_candy %>% 
       group_by(candy_bar_name)  %>%
@@ -189,7 +189,7 @@ pivot_candy %>%
       head(1) %>%
       paste(" --- Meh")
 
-# Not sure "any_full_sized_candy_bar" counts so headed 2
+
 pivot_candy %>% 
       group_by(candy_bar_name)  %>%
       filter(customer_satisfaction == "JOY") %>%
@@ -311,10 +311,8 @@ country_candy %>%
   summarise( sum = sum(case_when(customer_satisfaction == "MEH" ~ 0,
                                  customer_satisfaction == "DESPAIR" ~ -1,
                                  customer_satisfaction == "JOY" ~ 1)))  %>%
-     top_n(1,sum) %>%
+     top_n(1,sum) %>%  # Want to use slice_max as top_n but won't work 
   arrange(which_country_do_you_live_in, desc(sum), .by_group = TRUE)  
- 
-  
 
 
 ```
