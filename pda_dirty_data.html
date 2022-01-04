@@ -497,7 +497,7 @@ the larger data set.</code></pre>
 {"columns":[{"label":["are_you_going_actually_going_trick_or_treating_yourself"],"name":[1],"type":["chr"],"align":["left"]},{"label":["mean"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"No","2":"42"},{"1":"Yes","2":"40"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<pre class="r"><code>  # as many ages are implausible restrict the age to 5-100
+<pre class="r"><code>  # as many ages are implausible (0-300) restrict the age to 5-100
 candy_data %&gt;%
   select(are_you_going_actually_going_trick_or_treating_yourself, 
           how_old_are_you) %&gt;%
@@ -514,9 +514,18 @@ candy_data %&gt;%
 <div id="for-each-of-joy-despair-and-meh-which-candy-bar-received-the-most-of-these-ratings" class="section level2" number="5.3">
 <h2><span class="header-section-number">5.3</span> 3. For each of joy, despair and meh, which candy bar received the most of these ratings?</h2>
 <pre class="r"><code>pivot_candy &lt;- candy_data  %&gt;%
-    pivot_longer(cols=5:80,   names_to = &quot;candy_bar_name&quot;, 
+    pivot_longer(cols=6:80,   names_to = &quot;candy_bar_name&quot;, 
                               values_to = &quot;customer_satisfaction&quot;,
                               values_drop_na = TRUE)
+
+#pivot_candy_group &lt;- pivot_candy %&gt;% 
+#      select(candy_bar_name,   customer_satisfaction)  %&gt;%
+#      group_by( customer_satisfaction) %&gt;%
+#      mutate(candy_bar_num = n()) 
+    
+#pivot_candy_group %&gt;%
+#  arrange(desc(customer_satisfaction), desc(candy_bar_num)) %&gt;%
+#  summarise(customer_satisfaction, candy_bar_name, candy_bar_num)
 
 pivot_candy %&gt;% 
       group_by(candy_bar_name)  %&gt;%
@@ -570,14 +579,13 @@ pivot_candy %&gt;%
 <pre class="r"><code>pivot_candy[pivot_candy == &quot;JOY&quot;] &lt;-     &quot;1&quot;
 pivot_candy[pivot_candy == &quot;MEH&quot;] &lt;-     &quot;0&quot;
 pivot_candy[pivot_candy == &quot;DESPAIR&quot;] &lt;- &quot;-1&quot;
-pivot_candy$customer_satisfaction &lt;- as.numeric(pivot_candy$customer_satisfaction)</code></pre>
-<pre><code>## Warning: NAs introduced by coercion</code></pre>
-<pre class="r"><code># As &#39;other&#39; and &#39;I&#39;d ratuher not say&#39; look to be the same then combine 
+pivot_candy$customer_satisfaction &lt;- as.numeric(pivot_candy$customer_satisfaction)
+
+
+# As &#39;other&#39; and &#39;I&#39;d ratuher not say&#39; look to be the same then combine 
 # NA&#39;s are not converted
 pivot_candy[pivot_candy == &quot;I&#39;d rather not say&quot;] &lt;- &quot;Other&quot;</code></pre>
-</div>
-<div id="as-any-full-sized-candy-bar-may-not-qualify-took-it-out" class="section level2" number="6.2">
-<h2><span class="header-section-number">6.2</span> As any full sized candy bar may not qualify took it out</h2>
+<p>As any full sized candy bar may not qualify took it out</p>
 <pre class="r"><code>candy_sum &lt;- pivot_candy %&gt;%
   select(your_gender, candy_bar_name, customer_satisfaction)  %&gt;%
   group_by(your_gender, candy_bar_name) 
@@ -606,18 +614,78 @@ candy_sum &lt;- candy_sum %&gt;%
 </div>
 </div>
 </div>
-<div id="extensions" class="section level1" number="7">
-<h1><span class="header-section-number">7</span> 2 Extensions</h1>
-<div id="the-data-is-available-in-the-file-rwa.csv.-this-dataset-comes-from-httpsopenpsychometrics.org_rawdata.-it-measures-how-people-score-on-a-measure-called-right-wing-authoritarianism-or-rwa." class="section level2" number="7.1">
-<h2><span class="header-section-number">7.1</span> The data is available in the file rwa.csv. This dataset comes from <a href="https://openpsychometrics.org/_rawdata/" class="uri">https://openpsychometrics.org/_rawdata/</a>. It measures how people score on a measure called Right Wing Authoritarianism, or RWA.</h2>
-<div id="some-cleaning-hints" class="section level3" number="7.1.1">
-<h3><span class="header-section-number">7.1.1</span> 2.1.1 Some cleaning hints</h3>
+<div id="what-was-the-most-popular-candy-bar-in-each-year" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> 7 What was the most popular candy bar in each year?</h1>
+<pre class="r"><code>candy_2015 &lt;- pivot_candy %&gt;%
+  select(timestamp,  candy_bar_name, customer_satisfaction)  %&gt;%
+  filter(timestamp == &quot;2015&quot;)  %&gt;%
+  group_by(timestamp,  candy_bar_name) %&gt;%
+  summarise(timestamp, candy_bar_name, sum = sum(customer_satisfaction))  %&gt;%
+  arrange(desc(sum))  %&gt;%
+  head(1)</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;timestamp&#39;, &#39;candy_bar_name&#39;. You can override using the `.groups` argument.</code></pre>
+<pre class="r"><code>candy_2016 &lt;- pivot_candy %&gt;%
+  select(timestamp,  candy_bar_name, customer_satisfaction)  %&gt;%
+  filter(timestamp == &quot;2016&quot;)  %&gt;%
+  group_by(timestamp,  candy_bar_name) %&gt;%
+  summarise(timestamp, candy_bar_name, sum = sum(customer_satisfaction))  %&gt;%
+  arrange(desc(sum))  %&gt;%
+  head(1)</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;timestamp&#39;, &#39;candy_bar_name&#39;. You can override using the `.groups` argument.</code></pre>
+<pre class="r"><code>candy_2017 &lt;- pivot_candy %&gt;%
+  select(timestamp,  candy_bar_name, customer_satisfaction)  %&gt;%
+  filter(timestamp == &quot;2017&quot;)  %&gt;%
+  group_by(timestamp,  candy_bar_name) %&gt;%
+  summarise(timestamp, candy_bar_name, sum = sum(customer_satisfaction))  %&gt;%
+  arrange(desc(sum))  %&gt;%
+  head(1)</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;timestamp&#39;, &#39;candy_bar_name&#39;. You can override using the `.groups` argument.</code></pre>
+<pre class="r"><code>rbind(candy_2015,candy_2016,candy_2017)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["timestamp"],"name":[1],"type":["chr"],"align":["left"]},{"label":["candy_bar_name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["sum"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"2015","2":"reese_s_peanut_butter_cups","3":"4375"},{"1":"2016","2":"kit_kat","3":"920"},{"1":"2017","2":"reeses_pieces","3":"1403"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="what-was-the-most-popular-candy-bar-by-this-rating-for-people-in-us-canada-uk-and-all-other-countries" class="section level1" number="8">
+<h1><span class="header-section-number">8</span> 8. What was the most popular candy bar by this rating for people in US, Canada, UK and all other countries?</h1>
+<pre class="r"><code>country_candy &lt;- pivot_candy %&gt;%
+        mutate(which_country_do_you_live_in =  
+          case_when(which_country_do_you_live_in  
+                      %in% c(&quot;usa&quot;,&quot;canada&quot;,&quot;united kingdom&quot;) ~
+                      which_country_do_you_live_in, 
+                      TRUE ~ &quot;other&quot; )) %&gt;%
+        select(which_country_do_you_live_in,  
+             candy_bar_name, 
+             customer_satisfaction)  %&gt;%
+        filter(!is.na(which_country_do_you_live_in)) %&gt;%
+        group_by(which_country_do_you_live_in,  candy_bar_name) 
+
+country_candy %&gt;%
+  summarise( sum = sum(case_when(customer_satisfaction == &quot;MEH&quot; ~ 0,
+                                 customer_satisfaction == &quot;DESPAIR&quot; ~ -1,
+                                 customer_satisfaction == &quot;JOY&quot; ~ 1)))  %&gt;%
+     top_n(1,sum) %&gt;%
+  arrange(which_country_do_you_live_in, desc(sum), .by_group = TRUE)  </code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;which_country_do_you_live_in&#39;. You can override using the `.groups` argument.</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["which_country_do_you_live_in"],"name":[1],"type":["chr"],"align":["left"]},{"label":["candy_bar_name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["sum"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="extensions" class="section level1" number="9">
+<h1><span class="header-section-number">9</span> 2 Extensions</h1>
+<div id="the-data-is-available-in-the-file-rwa.csv.-this-dataset-comes-from-httpsopenpsychometrics.org_rawdata.-it-measures-how-people-score-on-a-measure-called-right-wing-authoritarianism-or-rwa." class="section level2" number="9.1">
+<h2><span class="header-section-number">9.1</span> The data is available in the file rwa.csv. This dataset comes from <a href="https://openpsychometrics.org/_rawdata/" class="uri">https://openpsychometrics.org/_rawdata/</a>. It measures how people score on a measure called Right Wing Authoritarianism, or RWA.</h2>
+<div id="some-cleaning-hints" class="section level3" number="9.1.1">
+<h3><span class="header-section-number">9.1.1</span> 2.1.1 Some cleaning hints</h3>
 <p>You’ll need to calculate people’s overall RWA score. This is found from the mean of questions 3 to 22. Questions 1 and 2 are warm up questions. Note that the following questions are reverse scored: 4, 6, 8, 9, 11, 13, 15, 18, 20, 21. Read the file rwa_codebook.txt to understand how to clean this data. [Hint: you may want to recode some of the variables to give their values meaning].</p>
 </div>
 </div>
 </div>
-<div id="read-in-the-data" class="section level1" number="8">
-<h1><span class="header-section-number">8</span> Read in the data</h1>
+<div id="read-in-the-data" class="section level1" number="10">
+<h1><span class="header-section-number">10</span> Read in the data</h1>
 <pre class="r"><code>source(here::here(&quot;R_scripts/read_in_rwa_data.R&quot;))</code></pre>
 <pre class="r"><code>glimpse(rwa_data)</code></pre>
 <pre><code>## Rows: 9,881
@@ -720,10 +788,10 @@ candy_sum &lt;- candy_sum %&gt;%
   </script>
 </div>
 </div>
-<div id="analysis-questions-2" class="section level1" number="9">
-<h1><span class="header-section-number">9</span> 2.1.2 Analysis questions</h1>
-<div id="whats-the-average-rwa-score-for-each-gender" class="section level2" number="9.1">
-<h2><span class="header-section-number">9.1</span> 1. What’s the average RWA score for each gender?</h2>
+<div id="analysis-questions-2" class="section level1" number="11">
+<h1><span class="header-section-number">11</span> 2.1.2 Analysis questions</h1>
+<div id="whats-the-average-rwa-score-for-each-gender" class="section level2" number="11.1">
+<h2><span class="header-section-number">11.1</span> 1. What’s the average RWA score for each gender?</h2>
 <pre class="r"><code>rwa_data %&gt;%
   select(gender, rwa_score) %&gt;%
   filter(!gender == 0) %&gt;%
@@ -735,8 +803,8 @@ candy_sum &lt;- candy_sum %&gt;%
   </script>
 </div>
 </div>
-<div id="whats-the-average-rwa-score-for-left-handed-people-vs.-right-handed-people." class="section level2" number="9.2">
-<h2><span class="header-section-number">9.2</span> 2. What’s the average RWA score for left handed people vs. right handed people.</h2>
+<div id="whats-the-average-rwa-score-for-left-handed-people-vs.-right-handed-people." class="section level2" number="11.2">
+<h2><span class="header-section-number">11.2</span> 2. What’s the average RWA score for left handed people vs. right handed people.</h2>
 <pre class="r"><code>rwa_data %&gt;%
   select(hand, rwa_score) %&gt;%
   filter(!hand == 0) %&gt;%
@@ -748,8 +816,8 @@ candy_sum &lt;- candy_sum %&gt;%
   </script>
 </div>
 </div>
-<div id="whats-the-average-family-size-for-each-type-of-childhood" class="section level2" number="9.3">
-<h2><span class="header-section-number">9.3</span> 3. What’s the average family size for each type of childhood?</h2>
+<div id="whats-the-average-family-size-for-each-type-of-childhood" class="section level2" number="11.3">
+<h2><span class="header-section-number">11.3</span> 3. What’s the average family size for each type of childhood?</h2>
 <pre class="r"><code>rwa_data %&gt;%
   select(urban, familysize) %&gt;%
   filter(!urban == 0) %&gt;%
@@ -761,8 +829,8 @@ candy_sum &lt;- candy_sum %&gt;%
   </script>
 </div>
 </div>
-<div id="whats-the-average-time-to-take-the-test-for-each-education-level" class="section level2" number="9.4">
-<h2><span class="header-section-number">9.4</span> 4 What’s the average time to take the test for each education level?</h2>
+<div id="whats-the-average-time-to-take-the-test-for-each-education-level" class="section level2" number="11.4">
+<h2><span class="header-section-number">11.4</span> 4 What’s the average time to take the test for each education level?</h2>
 <pre class="r"><code>rwa_data %&gt;%
   select(education, testelapse) %&gt;%
   filter(!education == 0) %&gt;%
@@ -774,8 +842,8 @@ candy_sum &lt;- candy_sum %&gt;%
   </script>
 </div>
 </div>
-<div id="create-a-plot-of-results-of-question-4." class="section level2" number="9.5">
-<h2><span class="header-section-number">9.5</span> 5. Create a plot of results of question 4.</h2>
+<div id="create-a-plot-of-results-of-question-4." class="section level2" number="11.5">
+<h2><span class="header-section-number">11.5</span> 5. Create a plot of results of question 4.</h2>
 <pre class="r"><code>data &lt;- rwa_data %&gt;%
   select(education, testelapse) %&gt;%
   filter(!education == 0) %&gt;%
@@ -785,8 +853,8 @@ education &lt;- table(data)
 plot(education)</code></pre>
 <p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABUAAAAPACAMAAADDuCPrAAAB3VBMVEUAAAAAAAQAAAgAABAAABcAAB0AACgAACoAADEAADIAADoAAEkAAFgAAGYADRcAFAAAFCgAIXwAKnwAMmYAOjoAOmYAOpAASbYAZmYAZpAAZrYNAAANUbwXAAAXFwAbMTodAAAgAAAgFAAgIQAoAAAoDQAokNsqKCAqZmYqkNsxIAoxOjoyAAA0ZmY6AAA6OgA6Oio6OjE6Ojo6OmY6ZmY6ZpA6ZrY6e1E6kJA6kLY6kNs6nf9JAABJkLZRDQBYAABYMQBc//9mAABmADpmOgBmOjpmOmZmOpBmZgBmZjpmZmZmZpBmgWZmkJBmkLZmkNtmtrZmtttmtv9m2/97vNt8IQCBKACB//+QMQCQOgCQZgCQZjqQZmaQfEmQkGaQkJCQkLaQtraQttuQtv+Q27aQ29uQ2/+cOgCctrac//+dkDqd//+2ZgC2Zjq2kDq2kGa2kJC2tpC2tra2ttu2vJC2vLa225C227y229u22/+2/7a2//+8//++vr7bgSjbkCrbkDLbkDrbkGbbnJzbtmbbtpDbtrbbttvb25Db27bb29vb2//b/7bb/9vb////nDr/tkn/tmb/tpD/22b/23v/25D/27b/29v//3D//4H//53//7b//7z//9v////12A3MAAAACXBIWXMAAB2HAAAdhwGP5fFlAAAgAElEQVR4nO2d+WMbaZ6XC1gWEIQzDhAYzuEGBZxOYM3tdRbaYTKTcGYcZiYBmsvpbNwcCc2lxs5OnFmDGewwa6S/lboklSxZjl7XWyr5eZ4fumUdpfqovt8ndb6VDEREJIhk2TMgIrKqKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFBpFbtJyu36prf/3eL/Z5vpdDtf1DdhkYEClZZRr0APtpKN4pEClRgoUGkVdQr0dCedlgKViChQaRV1CjSflgKViChQaRWxBCoSAwUqrUKByiqhQKVVKFBZJRSoNMz7nW7qtfVHH6pPHjxIn7v5+Kgi0F726NZR/nL/afbHk+G7+6/Wk/PT+Fg817n7qPjIcTLmyfQ+0Pc7d7JvvPdi9Mxxqdt8/jr33sbILtcNBSqNcvp0pLX7R6Mnt8qn1t5+gkD7r7rT0/hm/FwnP/VzrkBPtkavrQ0VWgh0NCuuusonoEClSU66Fa+Vdqw+2blzqUD7T5PpafSqz+XumyfQ6XcPP/BZd+p5kYtRoNIgucbGFPs6J414qUB3J9+ba27Cy0ly4+u5Aj1OJtmY+Ww+FZG5KFBpkFx+ncdHg/7LodmG64PZpvRw+36eQAvP3Xo7GBx0R5rLp7v2drgzoBTlBeeBFhbvZPtK97vjt5cCzeajmPJ4n6vIBShQaY7qamBvaMpCjuXq3u6lAt0dP12sd25MTLd4rrKuOi3Q3YpjC5nmkyvNnE/5WIHKJ6FApTmOR3Ys1ZVps6q88o85Ap3Yl7m7/vD5Yf76u2frt8eTnSvQ4h3DHZzHI5tWpTn5HpGLUKDSHFWj5U7MzHVc3d9YmHKOQCfePYPLBTo5hWLKo6NOpZrHz4rMQ4FKY0wfLcpMVxXl4NLzQI8n3n3+C97/4E5lPXK2QCe/b/yFVbEqUPk0FKg0xgyBbpwX2mjX6AUCPae/MaevHowPxV8q0PG1TqM/J9ZMvYhJPgkFKo0RUaD7k+cxBQt0OGUFKp+EApXGmL1hPLlRPnsTfrxnc/YmfHFSVLL+8KufXLoPdO4mvAKVhVCg0hwztfQpB5HOCXT47uPOZz96czQ8/vNi8p2LHESaUrMClU9CgUpzzNz+riqvehpTVXTjU4wm3j08J7SiuyuexqRAZSEUqDTH6Mz3Qb72+Chbe5w4kb7cSzoWaKHC8unzJ9IPVVjdNdC7dB/ojBPpx9+nQGUhFKg0SHGh0f2jQb8YPalyCVB+KWc5FFIutMK22Yb5+/LpyqWca28Ggx8PL9ssBNp5PBh8fFl5Z+nat4P3H2ZcrDT7Uk4FKguhQKVBzg36MbF+WeH27KcvHEykd/6d1bXR5PzVnlNvL6arQGVxFKg0yfGEQYeb1+PROYvx5IqTjCrDI3U+H4tuxnB21UGe1scTGOn6nEDnDGenQGUhFKg0ynjA4nybu6C/M5LZydh/45M7177ojQU6a0Dl0QDJnceja+wHo7ObsulNDqh8UBlQeficApXFUaDSMMXNNDp3X1SPxr/Pb+nx6MOgKtDBx5d3yndWBTrrlh79/fV8AkeT7ivuFPLZi+lbepw+K27p8Wb0jAKVxVGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAmEL9OOrO0mS3H1xNPddJ93bF794+qPQT7aUXvKkeHCcbJT/qbDb+eJTJnL52/pPb3wdMnsLErQE8mX6iUmr71uJH2ty+VY4//d8infPq/5VLP7FQQv0m25SsDa3POdVwvwqWcUaUqDFZxToXPJ3z/11V7H4F4cs0F6S3P+QVufBVnJr3jooWaDnaaUT5tCoQBd4abG3NSLQABQoWaBnm8NS6j+dW8IKdEwrnTAHBXoeBVorYIH2xgX0v++9Tf++8Z+2khtvB6c7+Y7Rt9kLpw/StdQfZ5VQVHlRFON39LIdANlk0rXY5ObjytTHn5x48XQr6Xw3n8rw6yY+OjWZ5pm1CT+e6/Rn+KabrL0Yv38//S06j/I1+P7Lbvq+7NHE27J3DEONHi9FoJWftzLblYcZ5TKtRqiUxG7nX+wk1R+g8r6V+LEml28lTvb3sCeOzxX1sFjH81+8O/ulTrrF9ltFyCtb/IvDFejUamfvxt9N0m35k3LHaPZq8fizcwKtvGMo0F7xzP3RxCqfrL5Yebr8uomPTk1mCcwQ6MTP8Pnwxxm+PSfrof7TZPjvSeVt5bPVd2SPlyHQys9bme3Kw/G7NqoRqiWxO35YUHnfSvxY5wQ6jpP9PZRhXu3Vn6so1sr8jwU6bKTxivTqFv/icAV6tnlux2evqPTd5BfS50830wJJS/j+0WC/m0wKtPKOskGPk7U3+T+wZW1OfLLyYvl0kj1dfl31o1OTWQZlHZfdfTz+GfK53k06L7InhisbZ5tZitOnRcOtvU1/kEIzo7f1soeDg+65x0sQaOXnrcx2NUH1M5UI1QU+fHo02cr7VuLHOi/QUZzy7yf5L5D2RrUai2Ktzv9xtfo3Jn7pFS7+xVGghTBuT2zSD4q/yn+Pe+cEWnnH5P6ys83hq9OfzF+sPl1+XfWjU5NZBtMCnQiTz/XxyB9pTw23UMs1kV7Rh8O3DddPsolMPm5coJWftzLblYcTnzmfdCrZcKrjJ1bixzov0Im5L2c2f0+1Gotirf5UFYEWnTSa7ioX/+Io0IpAh8eU3u89e5Dpoyz9k/P7QMfvKJ4YbmyNtwMrn6y+WO4mKnYD5V9XfXV6MstgehO+OtdT/45k24A3H30YTK7Sj982fDZzQPVx8wKd+HnHs119WP3MBQt8+gcYP7ESP9b5faATc1+s65b/qfxc5YcqP1X1NKZevn45msUVLv7F4Qq0f36jrSyS/s5o/euCZqi8o3jibHO48IdFVPlk9cXpGqq+Oj2ZZbCgQPsv8zle+/pSJ3S+qD5uXqATP+94tqsPq5+5YIFfSaBt+LHmC7Tc8jpf1MPeGP9UVYFm/6ukXOHiXxyuQKub7FWB7iad7R/tfehdvAZaecdwDfT8Qp/4R3j84qx/hMevNuSUS1hQoCnvn93JVuHbvwY6+Y3lbJ97OJgh0OoCv5JABy34sUYHyyvb6RWBZhva+SsT3znePh/+VFWBZm8dv2OVi39xwAItdonnHFf/VczrNt+nP7k/60n5sPqO0f6yc3u+pz859fTI1+OPTk1mGUwLdP6u4JyTzdFOu3PqaNM+0Kmf92SsserDcwKdWOCXCbT1P9bwQHsx/SmBps/88yJv9efqVX+6/KeauBLpOHlcmcMVLv7FAQs0XezJvTfp/98/qOwDLXaUn24V22vJ7aPsOGj+6q3y4cQ7Trq/Pz+no/M4Lckvq4cWRp+svFg9PlnWUPWj05NZAtMCveBkhJyT7lp2duR+saMsfXz69NyKTZuOwo9+3spsVxMMP5Mt06pAqyVxiUBb/2OlM3jrbXYsPQ88LdDjZH34YFyNvfLg/Hj+j8fVnzXNze7G+CtWt/gXhyzQbGEW5OcGV3aU59yeOHOtenrfuXekpfPy/O6b6qlwlReHZxSOa2jio1OTWQIXngeazFypqpxIWB4HONeXyz4PdLiwnkz8vJXZnjqzs1imE5vw4wV+mUDb/2NVz2qdIdD0a8ufovJzTfbGxDmvxWpr5edb5eJfHLRAB/1X6+kiW39UHo4vd5R3s0ONP843OE53kuR+0QEno8soJt7xTf4vanGJxv3K8cPKJ6svZusxa68ru1wnPzo1mea54Eqkcq6nt0qzWU7u5ddt5RfX5HM/8bblXolUEWj1563MduVhQb5Mq1qrLPBLBdr+H+t0p5v9DB9mzn25rTX6/mIWh0Uxnv/i3WX1p39NHDtf2eJfHLZAl0QNVyEvgdWc6yUB+7F2Pz3uNftlFGiTnHSz639X7WqL1ZzrJYH8sQ66n7CGfD1/GQXaJMPdWqu1n3w153pJAH+sbM/oJ6xVXs9fRoE2SrE3bdVGnFnNuV4SvB/ry3JUqcu4lr+MAhURCUSBiogEokBFRAJRoCIigShQEZFAFKiISCAKVEQkEAUqIhKIAhURCUSBiogEch0FmmCoI37cHzfq1Ns+f6Zvz9Rj0Zb5qJEFF8RKU0P8uD9u1Km3ff5M35qpR6Mt81EjSfJfILSmikSgXMMWVKAi0gzXsAUVqIg0wzVsQQUqIs1wDVtQgYpIM1zDFlSgItIM17AFFaiINMM1bEEFKiLNcA1bUIGKSDNcwxZUoCLSDNewBekCjXtJXJumfvXZW2Fav3TaNfVYtGU+agQu0AXrsFVXLF954ovO3irT9qXTqqlHoy3zUSNwgaJx2UuzXMPFYBNxcdlLs1zDxWATcXHZS7Ncw8VgE3Fx2UuzXMPFYBNxcdlLs1zDxWATcXHZS7Ncw8VgE3Fx2UuzXMPFYBNxcdlLs1zDxWATcXHZS7Ncw8UAb6JFr+hYXVz2V134C3fW6k49Fm2ZjxphN9GCZbjSuOyvuPAXbazVnXo02jIfNcJuItMzaI1B4FzDxcBuItMzUKDt4BouBnYTmZ6BAm0H13AxsJvI9AwUaDu4houB3USmZ6BA28E1XAzsJjI9AwXaDq7hYmA3kekZKNB2cA0XA7uJTM9AgbaDa7gY2E1kegYKtB1cw8XAbiLTM1Cg7eAaLgZ2E5meAXwchNZ4qzUzUh/sJjI9A/o4CG0RV1vmo0boTbTsuWoK03PTt2cPRlvmo0Y4ZcRuItNz0yvQiHDKiN1EpuemV6AR4ZQRu4lMz02vQCPCKSN2E5mem16BRoRTRuwmMj03vQKNCKeM2E1kem56BRoRThmxm8j03PQKNCKcMmI3kem56RVoRDhlxG4i03PTK9CIcMqI3USm56ZXoBHhlBG7iUzPTa9AI8IpI3YTmZ6bXoFGhFNG7CYyPTe9Ao0Ip4zYTWR6bnoFGhFOGbGbyPTc9Ao0IpwyYjeR6bnpFWhEOGXEbiLTc9Mr0IhwyojdRKbnplegEeGUEbuJTM9Nr0AjwikjdhOZnptegUaEU0bsJjI9N70CjQinjNhNZHpuegUaEU4ZsZvI9Nz0CjQinDJiN5HpuekVaEQ4ZcRuItNz0yvQiHDKiN1EpuemV6AR4ZQRu4lMz02vQCPCKSN2E5mem16BRoRTRuwmMj03vQKNCKeM2E1kem56BRoRThmxm8j03PQKNCKcMmI3kem56RVoRDhlxG4i03PTK9CIcMqI3USm56ZXoBHhlBG7iUzPTa9AI8IpI3YTmZ6bXoFGhFNG7CYyPTe9Ao0Ip4zYTWR6bnoFGhFOGbGbyPTc9Ao0IpwyYjeR6bnpFWhEOGXEbiLTc9Mr0IhwyojdRKbnplegEeGUEbuJTM9Nr0AjwikjdhOZnptegUaEU0bsJjI9N70CjQinjNhNZHpuegUaEU4ZsZvI9Nz0CjQinDJiN5HpuekVaEQ4ZcRuItNz0yvQiHDKiN1EpuemV6AR4ZQRu4lMz02vQCPCKSN2E5mem16BRoRTRuwmMj03vQKNCKeM2E1kem56BRoRThmxm8j03PQKNCKcMmI3kem56RVoRDhlxG4i03PTK9CIcMqI3USm56ZXoBHhlBG7iUzPTa9AI8IpI3YTmZ6bniXQ/vu9jDcNfFUGp4zYTWR6bnqQQE93usmQzqMPsb9uQCojdhOZnpseI9CDrWSStRdxv3BAKiN2E5memx4i0EKfnbvbz9Mt+NfbDwqFxt6U55QRu4lMz02PEGj/ZabLHx1Vnvr46k763P2jCz9TB5wyYjeR6bnpCQI9SVc/70/v8zzdSddJv4j2rQNSGbGbyPTc9ACBnm0m997OfCVV6I2vY33tgFRG7CYyPTc9QaC/dPHhotNfUqB1wG4i03PTAwS6PDhlxG4i03PTK9CIcMqI3USm56ZXoBHhlBG7iUzPTc8SqJdyRoLdRKbnpgcJ1Es548FuItNz02ME6qWcMWE3kem56SEC9VLOuLCbyPTc9AiBeilnbNhNZHpueoJAvZQzOuwmMj03PUCgXsoZH3YTmZ6bniBQL+WMDruJTM9NDxDo8uCUEbuJTM9Nr0AjwikjdhOZnptegUaEU0bsJjI9Nz1MoB/39r46GvSbuAxpQCojdhOZnpseJdD97NzPG18PzjbXZh+WrxlOGbGbyPTc9CSBvsyvP8oFGvkE0BJOGbGbyPTc9CCB9rLLkX7YTQXaf5okt+JehJTDKSN2E5mem54j0JNukjxOVz6zU+czgz6J/H0DUhmxm8j03PQcge4mye1BKdDBcf5HbDhlxG4i03PTYwSarnRm+z1Lgaarow1sw3PKiN1Epuemxwj0bDO/7r0UaPlXZDhlxG4i03PTK9CIcMqI3USm56bHCNRN+Jiwm8j03PQYgWYHkTZGAu15EKlW2E1kem56jkCPy3PoM4Gmjz2NqU7YTWR6bnqOQLNzPzsvMoH2v0w8kb5e2E1kem56jkCzA0djvJSzVthNZHpuepBA83XQ4T2NHUykVthNZHpuepJAs5sgZeMxde7Fvp9xCaeM2E1kem56lkAbhlNG7CYyPTe9Ao0Ip4zYTWR6bnqgQPe7yUX3Oa4ZThmxm8j03PQkgR5sZeeA9jwKXz/sJjI9Nz1IoL38TPpsWNByYProcMqI3USm56bnCDQzZ2rNXKPZCU0bkb9vQCojdhOZnpueI9BefvVRps7bDqhcN+wmMj03PUag5WhM2XroE4ezqxt2E5memx4j0FKZvaQc1U6B1gm7iUzPTU8T6G5SjqusQOuE3USm56aHCbTcBeqAyjXDbiLTc9NjBFrcybjcBVreojM2nDJiN5HpuekxAs32fq69+X6+BZ8PCOqAyjXCbiLTc9NzBDocDnSjeNTACiiojNhNZHpueo5Ay2uQbh3lAr3fwID0oDJiN5HpuelBAh30D7YfZiOBnv1iQwOCcsqI3USm56YnCbRxOGXEbiLTc9Mr0IhwyojdRKbnpocJtP9+b2/vsIlvyuCUEbuJTM9NjxLowVZ5T7m7jYynDCojdhOZnpseJNDKTTkbGcyOVEbsJjI9Nz1IoLvZQPSf/Wjvlz9vyqCcMmI3kem56TkCPU5GZ3/2XzZzTw9OGbGbyPTc9ByBTlz+7rXw9cJuItNz02MEerZZXel0NKZ6YTeR6bnpSQKtjADqeKD1wm4i03PTYwTaf6pA48FuItNz02MEmg1nNx7BzpvK1Qu7iUzPTc8R6NlWcmN4/vzk6mg0OGXEbiLTc9NzBDro7ySdx/mj061GzmIClRG7iUzPTY8R6NmD9fXsBPqbxf866wV3Y66IcsqI3USm56bnCHQzmUXULXlOGbGbyPTc9Ao04ndyyojdRKbnpscIdBlwyojdRKbnplegEeGUEbuJTM9Nr0AjwikjdhOZnpueK9BDr4WvD3YTmZ6bniTQ/uvtIet3vJSzTthNZHpuepBAj7vNHX8v4JQRu4lMz03PEejJpD+Te27C1we7iUzPTc8RaC+T5uvNpPO9V1tJ0nly+SeuDKeM2E1kem56jECzW8pt5EPRP8ll2sB4yqAyYjeR6bnpMQItR6Tv5RrNbNrAKiinjNhNZHpuepJAs8NG5UCgjgdaL+wmMj03PU2g5c2Q0r+8J1KNsJvI9Nz0GIGWYyiX5vSWHvXCbiLTc9NjBDrYzfeBjj2qQGuE3USm56bnCLRX7PYsDsMfN3IYnlNG7CYyPTc9R6DZgKCpNFN13njz400PItUKu4lMz03PEWiuzq/zM5jye3o0cFMkThmxm8j03PQggQ4OtvLdn1u5Px9H/zpSGbGbyPTc9CSBDjnY3n70oYkv4pQRu4lMz01PFGhjcMqI3USm56ZXoBHhlBG7iUzPTa9AI8IpI3YTmZ6bHiDQZdzQuIBTRuwmMj03vQKNCKeM2E1kem56gkAfrM/irgKtD3YTmZ6bHiDQ5cEpI3YTmZ6bXoFGhFNG7CYyPTe9Ao0Ip4zYTWR6bnqYQD/u7X11NOg3ch0SqYzYTWR6bnqUQPfvFEffzzbX3sb/NlIZsZvI9Nz0JIG+HJ6+VN5gLjqcMmI3kem56UECzW4Mv/bDbjmknbc1rhN2E5mem54j0JNukjxOVz6zE+i9rXHNsJvI9Nz0HIHu5oPQFwL1tsY1w24i03PTYwSarnRm+z1LgZZ3N44Mp4zYTWR6bnqMQMv7cJYC9a6c9cJuItNz0yvQiHDKiN1EpuemxwjUTfiYsJvI9Nz0GIFmB5E2RgLteRCpVthNZHpueo5Aj8tz6DOBpo89jalO2E1kem56jkCzcz87LzKB9r9MPJG+XthNZHpueo5AJ0em91LOWmE3kem56UECzddBSxxMpF7YTWR6bnqSQAeD051sPKbOvTcNfNeAVEbsJjI9Nz1LoA3DKSN2E5memx4j0P67bCjlEe9ePfI80PpgN5HpuekxAp289sgrkeqF3USm56ZXoBHhlBG7iUzPTU8Q6DfbKZ93k85n20O2EgVaJ+wmMj03PUGg2VDK03gpZ42wm8j03PQEgWaXwU+xFn8FFFRG7CYyPTc9QqD9vb291+km/PO9EYfxvm0Mp4zYTWR6bnqEQDOaOWw0CaeM2E1kem56jEDPnQfaCJwyYjeR6bnpMQJdBpwyYjeR6bnpgQLd7ybJPQcTqRV2E5mem54k0IOtbC9oz+Hs6ofdRKbnpgcJtJefPD88KbSJI0qcMmI3kem56TkCzcyZWjPXaDYy6Ebk7xuQyojdRKbnpucItJffxiNT5+38pkheiVQj7CYyPTc9RqDlbY2z9dAnDiZSN+wmMj03PUagpTJ7SXl7eAVaJ+wmMj03PU2gu8XhIwVaL+wmMj03PUyg5S7QbEu+gfsac8qI3USm56bHCDRT55PhLtBsRdSDSDXCbiLTc9NjBJrt/Vx78/18C77/ZVJ4NDKcMmI3kem56TkCTbfhczaKRw2sgILKiN1Epuem5wi0vAbp1lEu0PtNjMzEKSN2E5memx4k0EH/YPvhm/T/Z7947030L8vglBG7iUzPTU8SaONwyojdRKbnplegEeGUEbuJTM9NDxPox71sXPr+hya+i1RG7CYyPTc9SqD7d4px7M421xxQuVbYTWR6bnqSQF8OBwI923RA5XphN5HpuelBAs2Gol/7Ybe8oLOBKzlBZcRuItNz03MEmp0G+jhd+cwGESmu64wOp4zYTWR6bnqOQIvL3wuBOqByzbCbyPTc9BiBlgMqlwJ1NKZ6YTeR6bnpMQItRwAtBep4oPXCbiLTc9Mr0IhwyojdRKbnpscI1E34mLCbyPTc9BiBZgeRNkYC7XkQqVbYTWR6bnqOQI/Lc+gzgR47oHK9sJvI9Nz0HIFm5352XmQCzQek90T6OmE3kem56TkCHQ1Jn+OlnLXCbiLTc9ODBJqvg5ZcaTCR0x9sr6+vbz+6dBqcMmI3kem56UkCTdW3k43H1LnSgPQnW2MNX7IayykjdhOZnpueJdAaOOkma88PM15vXbYjgFNG7CYyPTc9RqD9d9lQyiPevXoUdhRpt3L+0+4l50JxyojdRKbnpscIdPLao+ArkcrzSGf8MQNOGbGbyPTc9Ap00cko0Bmwm8j03PQEgX6znfJ5N+l8tj1kKwkUaP9p5Qz840vOJuWUEbuJTM9NTxBoNpTyNIGXch4nnceFNfv73UsuZ+KUEbuJTM9NTxBodhn8FGuhgzFldwZJ1tfXs/9tzH8rp4zYTWR6bnqEQPt7e3uv003453sjDsOn9vHVnVzBN79z2Zn0nDJiN5HpuekRAs1oZgTQSThlxG4i03PTYwR67jzQRuCUEbuJTM9NjxFo3Rx8vv7QTfgh7CYyPTc9QKD9r+a8+G7htdLTnaTzuDiU5EGkIewmMj03PUCgZ5sXjr10urPwftFiULzvbK69OfQ0phHsJjI9Nz1AoP2dJLn/YcYL6brk4uMq7ya3j/rfL4YR6XktfAm7iUzPTQ8Q6GDwTTdJpoawO3iQJJ3vLjqps81MnSfdXLxeyjmE3USm56ZHCHRwmo/h+dnz4dmfh7/8IHBY5cKZZ5sKdAJ2E5mem54h0HR9czgMcmd9eGHn2ouA6fSf5hvvH38lE2i5InohnDJiN5HpuekpAh0M3j+YuJTzbuCo9L3xbtP+00sOw3PKiN1Epuem5wg05eBZvvrZWX8478ym+aTWLLfbzzYvu6CeU0bsJjI9Nz1KoLXQf3V3KNB7lxzC55QRu4lMz02vQCPCKSN2E5mem/96IBkAABsoSURBVF6BRoRTRuwmMj03vQINxGvhq7CbyPTc9CiBvnu2PeZh4NhMXgs/A3YTmZ6bHiTQc3f2CBwd1GvhZ8FuItNz03MEev7OSIEC9Vr4WbCbyPTc9ByBZhvdd58fjpg1vMjleC38TNhNZHpueoxA+0+Db8RZxWvhZ8JuItNz02MEerZZbHZfEa+Fnwm7iUzPTU8SaC03lfNa+Fmwm8j03PQYgY6vYa9rOl4LP4bdRKbnpscINDuINP+ko0/Ea+FnwG4i03PTcwS6hBvDc8qI3USm56bnCDQ7EbTz6PDy99UHp4zYTWR6bnqMQIsriK5+Iv0icMqI3USm56ZXoBHhlBG7iUzPTc8R6IP1Se4q0PpgN5HpuekxAl0GnDJiN5HpuekVaEQ4ZcRuItNz0yvQiHDKiN1Epuem5wr0MHBA5QXglBG7iUzPTU8SaP/1aDj69Tseha8TdhOZnpseJNDjWkakXwROGbGbyPTc9ByBnh+R/rIL2WuAU0bsJjI9Nz1HoNmI9Pdebyad773aSpJOLQOLXAKnjNhNZHpueoxAsxHpN7JbGmVjMqUynT8Ucj1wyojdRKbnpscItByRvpdrNLNpA6ugnDJiN5HpuelJAs0OGx0Xd0Y6ruUGSZfBKSN2E5mem54m0JNuvvGe/tXANjynjNhNZHpueoxAy1txlOZsZnRlThmxm8j03PQYgQ52832gY48q0BphN5Hpuek5Au0Vuz2Lw/DHjRyG55QRu4lMz03PEWg2onIqzVSdN978eNODSLXCbiLTc9NzBJqr8+v8DKaMbHs+NpwyYjeR6bnpQQIdHGzluz+3cn8+jv51pDJiN5HpuelJAh1ysL396EMTX8QpI3YTmZ6bnijQxuCUEbuJTM9Nr0AjwikjdhOZnpseJtCPe3tfHQ36jWzAk8qI3USm56ZHCXT/TjGQ8tnm2tv430YqI3YTmZ6bniTQl8OR6MuRmaLDKSN2E5memx4k0GxE5bUfdstzQR0PtE7YTWR6bnqOQLNbejxOVz6zc0EdD7Rm2E1kem56jkB386s3C4E6HmjNsJvI9Nz0GIGmK53Zfs9SoOWwoJHhlBG7iUzPTY8RaDmAXSlQh7OrF3YTmZ6bXoFGhFNG7CYyPTc9RqBuwseE3USm56bHCDQ7iLQxEmjPg0i1wm4i03PTcwR6XJ5DX96b09OY6oTdRKbnpucINDv3s/MiE2j/y8QT6euF3USm56bnCDS/p8cIL+WsFXYTmZ6bHiTQ0d08sks6HUykVthNZHpuepJAB4PTnWw8ps69Nw1814BURuwmMj03PUugDcMpI3YTmZ6bXoFGhFNG7CYyPTe9Ao0Ip4zYTWR6bnqSQPsHz7bHPPRKpPpgN5HpuelBAt3vJlW8Fr5G2E1kem56jkCPk0SBxoLdRKbnpucIdDeV5r2vDkc0cGdOThmxm8j03PQYgWbXIW3E/YopOGXEbiLTc9OTBNrARvsknDJiN5HpuekxAu0/VaDxYDeR6bnpMQId7DYzgEgVThmxm8j03PQcgabb8A2MoTwBp4zYTWR6bnqOQLPbeNxvYBDQCpwyYjeR6bnpQQIdnG4lyc31IXc9D7Q+2E1kem56kEBPvBIpGuwmMj03PUeg5/ypQOuE3USm56bnCHQ3STqPDr0SKQrsJjI9Nz1GoNmVSA3ciHMCThmxm8j03PQkgXoifTTYTWR6bnqMQL0SKSbsJjI9Nz1GoIOem/DxYDeR6bnpOQJNV0FvNXsePaiM2E1kem56jkAzg641dD/jEk4ZsZvI9Nz0GIGePVhfz8//9EqkCLCbyPTc9ByBbnpLj3iwm8j03PQKNCKcMmI3kem56TECXQacMmI3kem56RVoRDhlxG4i03PTK9CIcMqI3USm56YHCLT/1ZwX38U8NZRTRuwmMj03PUCgZ5trby946XQn6qEkThmxm8j03PQAgfZ3kuT+rMHrTtMXol6cxCkjdhOZnpseINDB4Jtuktw7fxHSwYMk6Xw33pcOSGXEbiLTc9MjBJrfDSlJPnt+WP59+MsPsicu3LSvCU4ZsZvI9Nz0DIGm65tb5fnznfXhrT3WXkT9xgGpjNhNZHpueopAB4P3DyYuRLrbwLginDJiN5Hpuek5Ak05eJavfnbWH847s6k+OGXEbiLTc9OjBNo0nDJiN5HpuekVaEQ4ZcRuItNz0yvQiHDKiN1EpuemV6AR4ZQRu4lMz00PEGj/3d4svop/gyROGbGbyPTc9ACBTg2l7IDKtcNuItNz0yvQiHDKiN1EpuemBwh0tAm/kySde8/39n7QTTqP3ISvE3YTmZ6bHiDQIb0k+YWj0cON2F83IJURu4lMz03PEehxktwe/bGbJE8if9+AVEbsJjI9Nz1GoP2nSeeL0V8n3bgjgRZwyojdRKbnpscI9Gyzetho8q9YcMqI3USm56ZXoBHhlBG7iUzPTY8RaLoJX9nteRz5Zh4FnDJiN5HpuekxAs2OvI9WOk83GzkMzykjdhOZnpueI9DsfPpiEPr+freR8+hBZcRuItNz03MEmm22Z6wXd/b44vIPXBlOGbGbyPTc9CCBDk62Rtdxxr6dXAGnjNhNZHpuepJAB4P3O3dSe96cusVxJDhlxG4i03PTswTaMJwyYjeR6bnpFWhEOGXEbiLTc9Mr0IhwyojdRKbnpkcJ9N2z7TEPPZG+PthNZHpuepBAT7oOqBwLdhOZnpueI9Bz/lSgdcJuItNz03ME2kuleff54YgPkb9vQCojdhOZnpseI9BsMJHbl7+tVjhlxG4i03PTYwR6ttnM5ZtVOGXEbiLTc9OTBNrE+CETcMqI3USm56bHCDTdhFeg0WA3kem56TECzQ4iNXAfuQk4ZcRuItNz03MEuoRteE4ZsZvI9Nz0HIFmJ4J2Hh3G/pYqnDJiN5HpuekxAs0GpPdE+liwm8j03PQKNCKcMmI3kem56TkCfbA+yV0FWh/sJjI9Nz1GoMuAU0bsJjI9N70CjQinjNhNZHpuegUaEU4ZsZvI9Nz0CjQinDJiN5HpuekxAu1XR6N3RPqaYTeR6bnpMQL1NKaYsJvI9Nz0CjQinDJiN5HpuekxAh18HI1F/3on6Tx2RPo6YTeR6bnpOQKtctJNHjfwNZwyYjeR6bnpmQId9BoZnp5TRuwmMj03PVSg6SpoAzdI4pQRu4lMz00PFWgzg4NyyojdRKbnpocKNF0DVaA1wm4i03PTQwXaS5JbnkhfH+wmMj03PVGg/cMvk0ZuEs8pI3YTmZ6bHiPQ8yfSexS+TthNZHpueqpAO54HWifsJjI9Nz1HoNUR6e8+auA6JFIZsZvI9Nz0GIEuA04ZsZvI9Nz0CjQinDJiN5HpuekVaEQ4ZcRuItNz08ME+nEv5atGdoAOSGXEbiLTc9OjBLp/p8lj8KQyYjeR6bnpSQJ9WTmN6X7865BIZcRuItNz04ME2stWPe/t7b3e6TZzIRKojNhNZHpueo5AT7qj9c7+S69Eqhd2E5mem54j0N3qWueu18LXCruJTM9NjxFo/2l1pTNdHXU0phphN5HpuekxAp0cQtkBleuF3USm56ZXoBHhlBG7iUzPTY8RqJvwMWE3kem56TEC9SBSTNhNZHpueo5Aj5NkdDP4/fTxk8jfNyCVEbuJTM9NzxFottaZrD0/PDx8veWJ9DXDbiLTc9ODBNp/WrmUs4E9oKQyYjeR6bnpQQLNL0AqBxNp5FJ4UBmxm8j03PQkgaa8e7a9vf3wqya+akAqI3YTmZ6bHibQZuGUEbuJTM9NzxHoy7UXkb9hCk4ZsZvI9Nz0GIFOnkjfDJwyYjeR6bnpMQJt5uLNSThlxG4i03PTYwSaroEq0Giwm8j03PQYgWYD0jdx8nwVThmxm8j03PQcgQ72u9mFSLG/pQqnjNhNZHpueoxA+8+2P0+qOJxdjbCbyPTc9BiBnm0miQKNBbuJTM9NzxHog/VJ7irQ+mA3kem56TECXQacMmI3kem56RVoRDhlxG4i03PTK9CIcMqI3USm56ZXoBHhlBG7iUzPTa9AI8IpI3YTmZ6bXoFGhFNG7CYyPTe9Ao0Ip4zYTWR6bnoFGhFOGbGbyPTc9Ao0IpwyYjeR6bnpFWhEOGXEbiLTc9Mr0IhwyojdRKbnplegEeGUEbuJTM9Nr0AjwikjdhOZnptegUaEU0bsJjI9N70CjQinjNhNZHpuegUaEU4ZsZvI9Nz0CjQinDJiN5HpuekVaEQ4ZcRuItNz0yvQiHDKiN1EpuemV6AR4ZQRu4lMz02vQCPCKSN2E5mem16BRoRTRuwmMj03vQKNCKeM2E1kem56BRoRThmxm8j03PQKNCKcMmI3kem56RVoRDhlxG4i03PTK9CIcMqI3USm56ZXoBHhlBG7iUzPTa9AI8IpI3YTmZ6bXoFGhFNG7CYyPTe9Ao0Ip4zYTWR6bnoFGhFOGbGbyPTc9Ao0IpwyYjeR6bnpFWhEOGXEbiLTc9Mr0IhwyojdRKbnplegEeGUEbuJTM9Nr0AjwikjdhOZnptegUaEU0bsJjI9N70CjQinjNhNZHpuegUaEU4ZsZvI9Nz0CjQinDJiN5HpuekVaEQ4ZcRuItNz0yvQiHDKiN1EpuemV6AR4ZQRu4lMz02vQCPCKSN2E5mem16BRoRTRuwmMj03vQKNCKeM2E1kem56BRoRThmxm8j03PQKNCKcMmI3kem56RVoRDhlxG4i03PTK9CIcMqI3USm56ZXoBHhlBG7iUzPTa9AI8IpI3YTmZ6bXoFGhFNG7CYyPTe9Ao0Ip4zYTWR6bnoFGhFOGbGbyPTc9Ao0IpwyYjeR6bnpFWhEOGXEbiLTc9Mr0IhwyojdRKbnplegEeGUEbuJTM9Nr0AjwikjdhOZnptegUaEU0bsJjI9N70CjQinjNhNZHpuegUaEU4ZsZvI9Nz0CjQinDJiN5HpuekVaEQ4ZcRuItNz0yvQiHDKiN1EpuemV6AR4ZQRu4lMz02vQCPCKSN2E5mem16BRoRTRuwmMj03vQKNCKeM2E1kem56BRoRThmxm8j03PQKNCKcMmI3kem56RVoRDhlxG4i03PTK9CIcMqI3USm56ZXoBHhlBG7iUzPTa9AI8IpI3YTmZ6bXoFGhFNG7CYyPTe9Ao0Ip4zYTWR6bnoFGhFOGbGbyPTc9Ao0IpwyYjeR6bnpFWhEOGXEbiLTc9Mr0IhwyojdRKbnplegEeGUEbuJTM9Nr0AjwikjdhOZnptegS7O6Q+219fXtx+9veyNnDJiN5HpuekV6KKcbCVD1r6Y/1ZOGbGbyPTc9Ap0QU66ydrzw4zXW0lnvkE5ZcRuItNz0yvQBdlNbs98PAtOGbGbyPTc9Ap0Mc42b3w9+48ZcMqI3USm56ZXoIuxoEA5zEq/7NpuCtNz0yvQxeg/TZ6M/jhObh3Ne/OypdYks9Ivu7abwvTc9Ap0QY6TzuPCmv39bkWmch5OE7EVwk6vQBell61vra+vZ//bWPbMtBlOE7EVwk6vQBfm46s7+Ubrze9ceiY9Gk4TsRXCTq9AJRKcJmIrhJ1egUokOE3EVgg7vQJdnP/xr46yDfnth//x2cO5R+HZcJqIrRB2egW6KP/1DyRJsvbvutlu0G/NPw+UDaeJ2Aphp1egC/I/k+S3/6HUnZ3Hh/vdRIFeDKeJ2Aphp1egC/KPkj+Yn8qUjSPyv5LOv172/LQXThOxFcJOr0AX42ff/rm/n13D+fPZyufPvv3z/3j+2698Oc/ypn7liXOaaHZ6DuRlr0AXo3Dm2eaNf5PcOrpUoFevxKVN/eoT5zSRAuUuewW6GP/vbyR/Nb+e84vdZOOn33IT/mI4TdSaHmoNnGXfnoXflvm4hH+Z/Jbnr7s3u7d+9Wnyx5Pf5kGkC+E0UWt6qDVwln17Fn5b5uMS/s8fTbdZOk96SfIX0wcehb8YThO1podaA2fZt2fht2U+LuP0b/38X/8wGHzTTZI/pUDnwGmi1vRQa+As+/Ys/LbMxyL0f8UrkS6E00St6aHWwFn27Vn4bZmPT+Tg8/WHjsY0D04TtaaHWgNn2bdn4bdlPi7jdCfpPC5GBXU80Hlwmqg1PdQaOMu+PQu/LfNxCWebmTm/8zeLM+Ackf5iOE3Umh5qDZxl356F35b5uITd8uTh3/PmcP/PJ7932bPTYjhN1Joeag2cZd+ehd+W+ZjPz/5I8jv/3F/6Y8mv/8Pr6+t/NvmNl1zKSYbTRK3podbAWfbtWfhtmY/5/N9vTVzE9hv+9vy3X/mauOVN/coTX3ACK801W/YLTn3W55fttcZQoAvxa91fl9wenG3+7v+c/vHTb3X+7dx3L1jl1+1aeA7Xa9k7kMwCKNCF6P/D5HckTwYfsxNA+/8k+V2eByoyhQJtnrbMxyX892R4AWd2PP7PLHt2RFqIAm2etszHJfSfJj/3F/5Z9uhn307WvJJTZBoF2jxtmY/L6L+6W2jzbPOeG/AiM1CgzdOW+RCRK6JAm6ct83E57/bKNc++tzUWmYECbZ62zMdl7Gc3NF7798/W7z76yabD2YlMo0Cbpy3zMZ/s0Pvd7a3i/Lff9G0FKjKNAm2etszHfM7+WvIns3siJb/5Hxx+6Yj0IrNQoM3TlvmYT35b4/7T5O9l7vxvyW+9RKBRrxdp+aWcK53+yhcztmv+mr+UE8SCv20s2jIf88nvZHy2eePrXnLr6Kff8rbGcyYedf7aNfW2z5/jIERksd82Gm2Zj/n8WjddA80EOthNNi69L7yISCOshkCLfaC7nS+y7fi/7H3hRaQVrIhAN5Pk5/70D7q304dbyaX7QEVEmmA1BDp490//RLbfI92Gz1zqUXgRaQMrItCM/rsf/J1MoPd+1dsai0gbWCGBioi0i5URaP+rdLXzNLuU88OyZ0VEJGdVBNrLdnwWt4XvfHfZMyMikrEiAj1OOveP0v989zC7lNP7wotIG1gNgfafptLM/zPIVkZveRBJRFrAagg0vwjpbHN4VyRPYxKRNqBARUQCWQ2BFlvvu8Um/LGb8CLSClZDoNlBpC8GJ921t4PB6WaysezZEREZrIxAszOYbm4/SJL1O0lye9kzIyKSsSoCHRyUN/RIOo/cgBeRVrAyAk05fLe398brkESkLaySQEVEWoUCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSot5mwzuXUU+uHTF9l/+0+TG1/XN0ciVRSotJgrCLT/MtnI/69AJR4KVFrMFQR6nChQiY4ClRZTg0BFIqJApcUoUGk3ClRajAKVdqNApQX099eTJLn7YiTL050k6dw/KgXaf5p0viheOOkOldrfv5O+597b4Uc+vsqm0bmbH3tP9ZnzpLIPtH/woPIl+fP9V5PTEFkMBSrLJ7ViwVqpsl7x562fXCzQk63iPZ0nEx/JPnU0U6CnWxNfkj3/H7qjt4mEoEBl6Yz8mZSuG8nw910o0HTdtKR4ZezPfNN9WqDjDxR/p8+PGU5dZDEUqCybTG1rL7Jt8lSkt4dPpKuJ2d8XCXQ3td7jYrVy+JH7H9IH77eKj0ydxpR94NHRoP+q/JJcoJ3HR9kJo+4ulUAUqCyb42S4WzPVYCbK3vCJbNV0tkDLd44eHBdWLN6QC/OcQNOny0mUjzKBljtHe6MPiyyGApVlszvegs6tV9Fl7yKBjoXZO7cHMzXqLIFWJLmbv5IJdGNimiILo0BlyVRPVUpVdnukwMFIbdMCPa/Nko/vnnWTmQLdHX8g/5LZR/ZFFkOBypKpHN0pjqFXjHrhaUy7U8d9+gcPutWDRJMCrUyhnIQClRpQoLJkKsfgC4FWfPbpAq1OZbZAR1fEFxNVoFIDClSWzJS+QtZAi9XYm3cfPv/JzH2groFKFBSoLJnKLs+pJz55H2hvdBL+BQeRKvtAiwNQClRqQIHKkskOhz+54InhCU2754/LT5y2dLtqw+PZB5FmHYVXoHJVFKgsm9RtN8aXcG5UzgPNNsyHp80X+jstnxmf1rk7eeZT9oZPPQ9UgcpVUaCybDJNZpcEDT6+LC6qzK9EejMYHAyvRMov1Lx/VFyrNHElUnYZUbmFnm3C59cZFWIcnp4/60qkCwcoEVkMBSpL57hyEH5j4om/snn+yvfvTT2Tf6Q6iUKMxWH5udfCK1C5KgpUls9xtyrDQXkV/Hg0pvE7NkaH6EeDKxUfeTmU56NyD2oxWMjGvNGYFKhcFQUqLaCfj+V589GH4ROnO93KeKCDbPO+m43lWTnHKR8PNLk7HMszH+zzZrqRPjy+1N/JtvtnjAdafqUClaujQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEogCFREJRIGKiASiQEVEAlGgIiKBKFARkUAUqIhIIApURCQQBSoiEsj/B1cL4/wMWIOHAAAAAElFTkSuQmCC" width="672" /></p>
 </div>
-<div id="whats-the-average-rwa-score-for-people-aged" class="section level2" number="9.6">
-<h2><span class="header-section-number">9.6</span> 6. What’s the average RWA score for people aged</h2>
+<div id="whats-the-average-rwa-score-for-people-aged" class="section level2" number="11.6">
+<h2><span class="header-section-number">11.6</span> 6. What’s the average RWA score for people aged</h2>
 <p>Under 18 18 to 25 26 to 40 41 to 60</p>
 <pre class="r"><code>rwa_data %&gt;% 
   select(age, rwa_score) %&gt;%
@@ -801,12 +869,12 @@ plot(education)</code></pre>
 </div>
 </div>
 </div>
-<div id="task-6---dog-owners-survey" class="section level1" number="10">
-<h1><span class="header-section-number">10</span> 2.2 Task 6 - Dog owners survey</h1>
+<div id="task-6---dog-owners-survey" class="section level1" number="12">
+<h1><span class="header-section-number">12</span> 2.2 Task 6 - Dog owners survey</h1>
 <p>The data is available in the file dog_survey.csv It is the results of a survey filled in by dog owners about their dogs.</p>
 </div>
-<div id="read-in-the-data-1" class="section level1" number="11">
-<h1><span class="header-section-number">11</span> Read in the data</h1>
+<div id="read-in-the-data-1" class="section level1" number="13">
+<h1><span class="header-section-number">13</span> Read in the data</h1>
 <pre class="r"><code>source(here::here(&quot;R_scripts/read_in_dog_survey.R&quot;))</code></pre>
 <pre><code>## Warning in eval(ei, envir): NAs introduced by coercion</code></pre>
 <pre class="r"><code>glimpse(dog_survey)</code></pre>
@@ -822,10 +890,10 @@ plot(education)</code></pre>
 ## $ dog_gender               &lt;chr&gt; &quot;M&quot;, &quot;M&quot;, &quot;F&quot;, &quot;M&quot;, &quot;F&quot;, &quot;M&quot;, &quot;M&quot;, &quot;M&quot;, &quot;F&quot;, ~
 ## $ dog_age                  &lt;int&gt; 53, 2, 71, 9, 23, 74, 46, 84, 69, 24, 60, 43,~</code></pre>
 </div>
-<div id="analysis-questions-3" class="section level1" number="12">
-<h1><span class="header-section-number">12</span> 2.2.2 Analysis questions</h1>
-<div id="the-client-only-counts-a-valid-email-address-as-one-ending-in-.com.-how-many-survey-results-have-a-valid-email-address." class="section level2" number="12.1">
-<h2><span class="header-section-number">12.1</span> 1. The client only counts a valid email address as one ending in ‘.com’. How many survey results have a valid email address.</h2>
+<div id="analysis-questions-3" class="section level1" number="14">
+<h1><span class="header-section-number">14</span> 2.2.2 Analysis questions</h1>
+<div id="the-client-only-counts-a-valid-email-address-as-one-ending-in-.com.-how-many-survey-results-have-a-valid-email-address." class="section level2" number="14.1">
+<h2><span class="header-section-number">14.1</span> 1. The client only counts a valid email address as one ending in ‘.com’. How many survey results have a valid email address.</h2>
 <pre class="r"><code>dog_survey %&gt;%
  select(email, contains(&quot;.com&quot;)) %&gt;%
   summarise(sum(n()))</code></pre>
@@ -835,8 +903,8 @@ plot(education)</code></pre>
   </script>
 </div>
 </div>
-<div id="whats-the-average-amount-spent-on-dog-food-for-each-dog-size." class="section level2" number="12.2">
-<h2><span class="header-section-number">12.2</span> 2. What’s the average amount spent on dog food for each dog size.</h2>
+<div id="whats-the-average-amount-spent-on-dog-food-for-each-dog-size." class="section level2" number="14.2">
+<h2><span class="header-section-number">14.2</span> 2. What’s the average amount spent on dog food for each dog size.</h2>
 <pre class="r"><code>&quot;%ni%&quot; &lt;- Negate(&quot;%in%&quot;)
 dog_sums &lt;- dog_survey %&gt;%
               filter(!is.na(amount_spent_on_dog_food)) %&gt;%
@@ -851,8 +919,8 @@ dog_sums %&gt;%
   </script>
 </div>
 </div>
-<div id="for-owners-whose-surname-starts-with-a-letter-in-the-second-half-of-the-alphabet-n-onwards-what-is-the-average-age-of-their-dog" class="section level2" number="12.3">
-<h2><span class="header-section-number">12.3</span> 3. For owners whose surname starts with a letter in the second half of the alphabet (N onwards) what is the average age of their dog?</h2>
+<div id="for-owners-whose-surname-starts-with-a-letter-in-the-second-half-of-the-alphabet-n-onwards-what-is-the-average-age-of-their-dog" class="section level2" number="14.3">
+<h2><span class="header-section-number">14.3</span> 3. For owners whose surname starts with a letter in the second half of the alphabet (N onwards) what is the average age of their dog?</h2>
 <pre class="r"><code>dog_sums &lt;- dog_survey %&gt;%
   filter(substr(last_name,1,1) &gt;= &quot;N&quot;) 
 
@@ -864,8 +932,8 @@ dog_sums %&gt;%
   </script>
 </div>
 </div>
-<div id="the-dog_age-column-is-the-age-in-dog-years.-if-the-conversion-is-1-human-year-6-dog-years-then-what-is-the-average-human-age-for-dogs-of-each-gender" class="section level2" number="12.4">
-<h2><span class="header-section-number">12.4</span> 4. The dog_age column is the age in dog years. If the conversion is 1 human year = 6 dog years, then what is the average human age for dogs of each gender?</h2>
+<div id="the-dog_age-column-is-the-age-in-dog-years.-if-the-conversion-is-1-human-year-6-dog-years-then-what-is-the-average-human-age-for-dogs-of-each-gender" class="section level2" number="14.4">
+<h2><span class="header-section-number">14.4</span> 4. The dog_age column is the age in dog years. If the conversion is 1 human year = 6 dog years, then what is the average human age for dogs of each gender?</h2>
 <pre class="r"><code>dog_sums &lt;- dog_survey %&gt;%
               filter(!is.na(dog_age)) %&gt;%
               group_by(dog_gender) 
@@ -878,8 +946,8 @@ dog_sums %&gt;%
   </script>
 </div>
 </div>
-<div id="create-a-plot-of-results-of-question-4.-1" class="section level2" number="12.5">
-<h2><span class="header-section-number">12.5</span> 5. Create a plot of results of question 4.</h2>
+<div id="create-a-plot-of-results-of-question-4.-1" class="section level2" number="14.5">
+<h2><span class="header-section-number">14.5</span> 5. Create a plot of results of question 4.</h2>
 <pre class="r"><code>dog_sums &lt;- dog_survey %&gt;%
               filter(!is.na(dog_age)) %&gt;%
               group_by(dog_gender) 

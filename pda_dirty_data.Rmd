@@ -130,6 +130,8 @@ candy_long <- candy_data  %>%
 
  
 ```
+
+
 ## 2. What was the average age of people who are going out trick or treating and the average age of people not going trick or treating?
 
 ```{r}
@@ -142,7 +144,7 @@ candy_data %>%
   group_by(are_you_going_actually_going_trick_or_treating_yourself) %>%
   summarise(mean = round(mean(how_old_are_you)))
 
-  # as many ages are implausible restrict the age to 5-100
+  # as many ages are implausible (0-300) restrict the age to 5-100
 candy_data %>%
   select(are_you_going_actually_going_trick_or_treating_yourself, 
           how_old_are_you) %>%
@@ -156,9 +158,18 @@ candy_data %>%
 
 ```{r}
 pivot_candy <- candy_data  %>%
-    pivot_longer(cols=5:80,   names_to = "candy_bar_name", 
+    pivot_longer(cols=6:80,   names_to = "candy_bar_name", 
                               values_to = "customer_satisfaction",
                               values_drop_na = TRUE)
+
+#pivot_candy_group <- pivot_candy %>% 
+#      select(candy_bar_name,   customer_satisfaction)  %>%
+#      group_by( customer_satisfaction) %>%
+#      mutate(candy_bar_num = n()) 
+    
+#pivot_candy_group %>%
+#  arrange(desc(customer_satisfaction), desc(candy_bar_num)) %>%
+#  summarise(customer_satisfaction, candy_bar_name, candy_bar_num)
 
 pivot_candy %>% 
       group_by(candy_bar_name)  %>%
@@ -220,7 +231,7 @@ pivot_candy$customer_satisfaction <- as.numeric(pivot_candy$customer_satisfactio
 pivot_candy[pivot_candy == "I'd rather not say"] <- "Other"
 ```
 
-## As any full sized candy bar may not qualify took it out
+ As any full sized candy bar may not qualify took it out
 
 ```{r}
 
@@ -248,7 +259,65 @@ rbind(
 
 
 ```
+# 7 What was the most popular candy bar in each year?
 
+```{r}
+candy_2015 <- pivot_candy %>%
+  select(timestamp,  candy_bar_name, customer_satisfaction)  %>%
+  filter(timestamp == "2015")  %>%
+  group_by(timestamp,  candy_bar_name) %>%
+  summarise(timestamp, candy_bar_name, sum = sum(customer_satisfaction))  %>%
+  arrange(desc(sum))  %>%
+  head(1)
+
+candy_2016 <- pivot_candy %>%
+  select(timestamp,  candy_bar_name, customer_satisfaction)  %>%
+  filter(timestamp == "2016")  %>%
+  group_by(timestamp,  candy_bar_name) %>%
+  summarise(timestamp, candy_bar_name, sum = sum(customer_satisfaction))  %>%
+  arrange(desc(sum))  %>%
+  head(1)
+
+candy_2017 <- pivot_candy %>%
+  select(timestamp,  candy_bar_name, customer_satisfaction)  %>%
+  filter(timestamp == "2017")  %>%
+  group_by(timestamp,  candy_bar_name) %>%
+  summarise(timestamp, candy_bar_name, sum = sum(customer_satisfaction))  %>%
+  arrange(desc(sum))  %>%
+  head(1)
+
+rbind(candy_2015,candy_2016,candy_2017)
+
+```
+
+# 8. What was the most popular candy bar by this rating for people in US, Canada, UK and all other countries?
+
+```{r}
+
+
+country_candy <- pivot_candy %>%
+        mutate(which_country_do_you_live_in =  
+          case_when(which_country_do_you_live_in  
+                      %in% c("usa","canada","united kingdom") ~
+                      which_country_do_you_live_in, 
+                      TRUE ~ "other" )) %>%
+        select(which_country_do_you_live_in,  
+             candy_bar_name, 
+             customer_satisfaction)  %>%
+        filter(!is.na(which_country_do_you_live_in)) %>%
+        group_by(which_country_do_you_live_in,  candy_bar_name) 
+
+country_candy %>%
+  summarise( sum = sum(case_when(customer_satisfaction == "MEH" ~ 0,
+                                 customer_satisfaction == "DESPAIR" ~ -1,
+                                 customer_satisfaction == "JOY" ~ 1)))  %>%
+     top_n(1,sum) %>%
+  arrange(which_country_do_you_live_in, desc(sum), .by_group = TRUE)  
+ 
+  
+
+
+```
 
 
 # 2 Extensions
