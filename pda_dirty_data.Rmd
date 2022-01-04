@@ -99,9 +99,13 @@ source(here::here("R_scripts/read_in_candy_data.R"))
 
 ```
 
-## Output to show valid which_country_do_you_live_in data
+
+## Output to show valid country data
     2015 was populated using 2016 residence data and looping to populate
     the larger data set.
+```{r}
+candy_data %>% distinct(country) 
+```
 
 
 
@@ -296,23 +300,23 @@ rbind(candy_2015,candy_2016,candy_2017)
 
 
 country_candy <- pivot_candy %>%
-        mutate(which_country_do_you_live_in =  
-          case_when(which_country_do_you_live_in  
+        mutate(country =  
+          case_when(country  
                       %in% c("usa","canada","united kingdom") ~
-                      which_country_do_you_live_in, 
+                      country, 
                       TRUE ~ "other" )) %>%
-        select(which_country_do_you_live_in,  
+        select(country,  
              candy_bar_name, 
              customer_satisfaction)  %>%
-        filter(!is.na(which_country_do_you_live_in)) %>%
-        group_by(which_country_do_you_live_in,  candy_bar_name) 
+        filter(!is.na(country)) %>%
+        group_by(country,  candy_bar_name) 
 
 country_candy %>%
   summarise( sum = sum(case_when(customer_satisfaction == "MEH" ~ 0,
                                  customer_satisfaction == "DESPAIR" ~ -1,
                                  customer_satisfaction == "JOY" ~ 1)))  %>%
      top_n(1,sum) %>%  # Want to use slice_max as top_n but won't work 
-  arrange(which_country_do_you_live_in, desc(sum), .by_group = TRUE)  
+  arrange(country, desc(sum), .by_group = TRUE)  
 
 
 ```

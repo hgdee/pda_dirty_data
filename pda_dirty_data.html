@@ -518,14 +518,14 @@ candy_data %&gt;%
                               values_to = &quot;customer_satisfaction&quot;,
                               values_drop_na = TRUE)
 
-#pivot_candy_group &lt;- pivot_candy %&gt;% 
-#      select(candy_bar_name,   customer_satisfaction)  %&gt;%
-#      group_by( customer_satisfaction) %&gt;%
-#      mutate(candy_bar_num = n()) 
+# pivot_candy_group &lt;- pivot_candy %&gt;% 
+   #  select(candy_bar_name,   customer_satisfaction)  %&gt;%
+  #   group_by( customer_satisfaction) %&gt;%
+ #     mutate(candy_bar_num = n()) 
     
-#pivot_candy_group %&gt;%
-#  arrange(desc(customer_satisfaction), desc(candy_bar_num)) %&gt;%
-#  summarise(customer_satisfaction, candy_bar_name, candy_bar_num)
+ #pivot_candy_group %&gt;%
+#    arrange(customer_satisfaction, candy_bar_name, candy_bar_num) %&gt;%
+#    top_n(customer_satisfaction, n=1)
 
 pivot_candy %&gt;% 
       group_by(candy_bar_name)  %&gt;%
@@ -546,8 +546,7 @@ pivot_candy %&gt;%
       head(1) %&gt;%
       paste(&quot; --- Meh&quot;)</code></pre>
 <pre><code>## [1] &quot;lollipops  --- Meh&quot; &quot;1570  --- Meh&quot;</code></pre>
-<pre class="r"><code># Not sure &quot;any_full_sized_candy_bar&quot; counts so headed 2
-pivot_candy %&gt;% 
+<pre class="r"><code>pivot_candy %&gt;% 
       group_by(candy_bar_name)  %&gt;%
       filter(customer_satisfaction == &quot;JOY&quot;) %&gt;%
       select(candy_bar_name, customer_satisfaction)  %&gt;%
@@ -665,7 +664,7 @@ country_candy %&gt;%
   summarise( sum = sum(case_when(customer_satisfaction == &quot;MEH&quot; ~ 0,
                                  customer_satisfaction == &quot;DESPAIR&quot; ~ -1,
                                  customer_satisfaction == &quot;JOY&quot; ~ 1)))  %&gt;%
-     top_n(1,sum) %&gt;%
+     top_n(1,sum) %&gt;%  # Want to use slice_max as top_n but won&#39;t work 
   arrange(which_country_do_you_live_in, desc(sum), .by_group = TRUE)  </code></pre>
 <pre><code>## `summarise()` has grouped output by &#39;which_country_do_you_live_in&#39;. You can override using the `.groups` argument.</code></pre>
 <div data-pagedtable="false">

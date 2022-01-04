@@ -17,20 +17,43 @@ candy_data_2$timestamp <- "2017"
 candy_data_3$timestamp <- as.character(candy_data_3$timestamp)
 candy_data_3$timestamp <- "2015"
 
+
+
+# Try a mutate
+us_convert_list <- c( "united states", "united states of america","america","usa! usa! usa!" , "usa! usa! usa!" , "u.s." , 
+                           "sub-canadian north usa... 'merica" , "usa of usa" , "the best one - usa" ,"murica" ,"^us$" , "usa of usa",
+                            "usaa.", "usa","u.s.a.","america","u.s.", "usa usa", "usa usa usa","usa! usa!","usa!","usausausausa",
+                            "unites states", "usa (i think but it's an election year so who can really tell)","usa!!!!!!","united states of america") 
+candy_data_1 <- candy_data_1 %>% 
+                  mutate(country = case_when( tolower(which_country_do_you_live_in)  %in% us_convert_list ~ "usa",
+                                              tolower(which_country_do_you_live_in)  %in% c("england", "uk","united kindom","united kingdom") 
+                                                                                                  ~ "united kingdom",
+                                              TRUE ~ tolower(which_country_do_you_live_in)))
+
+candy_data_2 <- candy_data_2 %>% 
+  mutate(country = case_when( which_state_province_county_do_you_live_in  %in% us_convert_list ~ "usa",
+                              which_country_do_you_live_in  %in% c("england", "uk","united kindom","united kingdom") 
+                              ~ "united kingdom",
+                              TRUE ~ tolower(which_country_do_you_live_in)))
+
 # Make consistent NA values
-candy_data_1$which_country_do_you_live_in <- candy_data_1$which_country_do_you_live_in %>%
+candy_data_1$country <- candy_data_1$country %>%
   replace(., is.na(.), "NA")
-candy_data_2$which_country_do_you_live_in <- candy_data_2$which_country_do_you_live_in %>%
+candy_data_2$country <- candy_data_2$country %>%
   replace(., is.na(.), "NA")
+
+#Get rid of the long country names
+candy_data_1 <- candy_data_1 %>% select (1,2,3,4,124, everything())
+candy_data_2 <- candy_data_2 %>% select (1,2,3,4,124, everything())
 
 
 # Convert the country types to a consistent format  - 2015 has no country data
-country_convert_list <- c( "united states" = "usa", "united states of america" = "usa","america" = "usa","usa! usa! usa!" = "usa", "usa! usa! usa!" = "USA", "u.s." = "usa", 
-                           "sub-canadian north usa... 'merica" = "usa", "usa of usa" = "usa", "the best one - usa" = "usa","murica" = "usa","^us$" = "usa", "usa of usa"= "usa",
-                           "england" = "united kingdom","uk" = "united kingdom", "usaa." = "usa") 
-candy_data_1$which_country_do_you_live_in <- str_replace_all(tolower(candy_data_1$which_country_do_you_live_in), country_convert_list)
+# country_convert_list <- c( "united states" = "usa", "united states of america" = "usa","america" = "usa","usa! usa! usa!" = "usa", "usa! usa! usa!" = "USA", "u.s." = "usa", 
+  #                         "sub-canadian north usa... 'merica" = "usa", "usa of usa" = "usa", "the best one - usa" = "usa","murica" = "usa","^us$" = "usa", "usa of usa"= "usa",
+   #                        "england" = "united kingdom","uk" = "united kingdom", "usaa." = "usa") 
+#candy_data_1$which_country_do_you_live_in <- str_replace_all(tolower(candy_data_1$which_country_do_you_live_in), country_convert_list)
                                                              
-candy_data_2$which_country_do_you_live_in <- str_replace_all(tolower(candy_data_2$which_country_do_you_live_in), country_convert_list)
+#candy_data_2$which_country_do_you_live_in <- str_replace_all(tolower(candy_data_2$which_country_do_you_live_in), country_convert_list)
                                                              
 #  we need to create columns for 2015 - candy_data_3 which has 5630  
 #                             using           candy_data_1 1259 
@@ -41,8 +64,8 @@ j <- 1
 for(i in 1:nrow(candy_data_3)) {
   
   
-  candy_data_3$which_country_do_you_live_in[i] =  
-    candy_data_1$which_country_do_you_live_in[j]
+  candy_data_3$country[i] =  
+    candy_data_1$country[j]
   
   candy_data_3$your_gender =  
     candy_data_1$your_gender[j]

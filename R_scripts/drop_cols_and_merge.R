@@ -12,7 +12,7 @@ drop_cols_list <- c("please","which_state","which_day", "sourpatch", "spotted_di
                     "lapel_pins", "bottle_caps","peeps", "mike_and_ike", "mr_goodbar",
                     "runts", "sea_salt", "mint_leaves", "kale_smoothie", "heath_bar",
                     "joy_joy", "peanut_butter_jars","mint_julep","nerds", "chardonnay",
-                    "vicodin","any_full_size")
+                    "vicodin","any_full_size","which_country")
 
 hit_list <- candy_data_1 %>% 
   select(starts_with(drop_cols_list))
@@ -34,13 +34,14 @@ hit_list <- candy_data_3 %>%
 candy_data_3 <- subset(candy_data_3,select = names(candy_data_3) %ni% (names(hit_list)))
 
 # Try a merge on cleaner data sets
-first_merge <- merge(candy_data_1,candy_data_2, by = intersect(names(candy_data_1), names(candy_data_2)),  all = TRUE, 
-                     sort = TRUE,  no.dups = TRUE,
-                     incomparables = NULL )
-
-second_merge <- merge(first_merge,candy_data_3, by = intersect(names(first_merge), names(candy_data_3)),  all = TRUE, 
-                      sort = TRUE,  no.dups = TRUE,
-                      incomparables = NULL )
+#first_merge <- merge(candy_data_1,candy_data_2, by = intersect(names(candy_data_1), names(candy_data_2)),  all = TRUE, 
+ #                    sort = TRUE,  no.dups = TRUE,
+  #                   incomparables = NULL )
+first_merge <- full_join(candy_data_1, candy_data_2)
+#second_merge <- merge(first_merge,candy_data_3, by = intersect(names(first_merge), names(candy_data_3)),  all = TRUE, 
+ #                     sort = TRUE,  no.dups = TRUE,
+  #                    incomparables = NULL )
+second_merge <- full_join(first_merge, candy_data_3)
 
 # Check we have no columns full of NA
 names(which(colSums(is.na(second_merge)) == nrow(second_merge)))
