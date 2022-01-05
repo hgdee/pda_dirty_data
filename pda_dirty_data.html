@@ -563,8 +563,6 @@ candy_data %&gt;%
 </div>
 <div id="for-the-next-three-questions-count-despair-as--1-joy-as-1-and-meh-as-0." class="section level1" number="6">
 <h1><span class="header-section-number">6</span> For the next three questions, count despair as -1, joy as +1 and meh as 0.</h1>
-<div id="what-was-the-most-popular-candy-bar-by-this-rating-system-for-each-gender-in-the-dataset" class="section level2" number="6.1">
-<h2><span class="header-section-number">6.1</span> 6 (?) What was the most popular candy bar by this rating system for each gender in the dataset?</h2>
 <pre class="r"><code>pivot_candy[pivot_candy == &quot;JOY&quot;] &lt;-     &quot;1&quot;
 pivot_candy[pivot_candy == &quot;MEH&quot;] &lt;-     &quot;0&quot;
 pivot_candy[pivot_candy == &quot;DESPAIR&quot;] &lt;- &quot;-1&quot;
@@ -574,28 +572,16 @@ pivot_candy$customer_satisfaction &lt;- as.numeric(pivot_candy$customer_satisfac
 # As &#39;other&#39; and &#39;I&#39;d ratuher not say&#39; look to be the same then combine 
 # NA&#39;s are not converted
 pivot_candy[pivot_candy == &quot;I&#39;d rather not say&quot;] &lt;- &quot;Other&quot;</code></pre>
-<p>As any full sized candy bar may not qualify took it out</p>
-<pre class="r"><code>candy_sum &lt;- pivot_candy %&gt;%
-  select(your_gender, candy_bar_name, customer_satisfaction)  %&gt;%
-  group_by(your_gender, candy_bar_name) 
-
-candy_sum &lt;- candy_sum %&gt;%
-  filter(!is.na(your_gender)) %&gt;%
-  filter(!is.na(candy_bar_name)) %&gt;%
-  summarise(sum = sum(customer_satisfaction))  %&gt;%
-  arrange(desc(sum))</code></pre>
+<div id="what-was-the-most-popular-candy-bar-by-this-rating-system-for-each-gender-in-the-dataset" class="section level2" number="6.1">
+<h2><span class="header-section-number">6.1</span> 6 (?) What was the most popular candy bar by this rating system for each gender in the dataset?</h2>
+<pre class="r"><code>pivot_candy %&gt;%
+  select(your_gender,  candy_bar_name, customer_satisfaction)  %&gt;%
+  filter(!is.na(your_gender))  %&gt;%
+  group_by(your_gender,candy_bar_name) %&gt;%
+  summarise( sum = sum(customer_satisfaction))  %&gt;%
+  arrange(your_gender, desc(sum))  %&gt;%
+  slice_max(sum, n = 1)</code></pre>
 <pre><code>## `summarise()` has grouped output by &#39;your_gender&#39;. You can override using the `.groups` argument.</code></pre>
-<pre class="r"><code>rbind( 
-    candy_sum %&gt;%
-      filter(your_gender == &quot;Female&quot;) %&gt;%
-      head(1),
-    candy_sum %&gt;%
-      filter(your_gender == &quot;Male&quot;) %&gt;%
-      head(1),
-    candy_sum %&gt;%
-      filter(your_gender == &quot;Other&quot;) %&gt;%
-      head(1)
-)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["your_gender"],"name":[1],"type":["chr"],"align":["left"]},{"label":["candy_bar_name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["sum"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"Female","2":"kit_kat","3":"2182"},{"1":"Male","2":"kit_kat","3":"4181"},{"1":"Other","2":"kit_kat","3":"244"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
@@ -605,31 +591,13 @@ candy_sum &lt;- candy_sum %&gt;%
 </div>
 <div id="what-was-the-most-popular-candy-bar-in-each-year" class="section level1" number="7">
 <h1><span class="header-section-number">7</span> 7 What was the most popular candy bar in each year?</h1>
-<pre class="r"><code>candy_2015 &lt;- pivot_candy %&gt;%
+<pre class="r"><code>  pivot_candy %&gt;%
   select(timestamp,  candy_bar_name, customer_satisfaction)  %&gt;%
-  filter(timestamp == &quot;2015&quot;)  %&gt;%
-  group_by(timestamp,  candy_bar_name) %&gt;%
-  summarise(timestamp, candy_bar_name, sum = sum(customer_satisfaction))  %&gt;%
-  arrange(desc(sum))  %&gt;%
-  head(1)</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;timestamp&#39;, &#39;candy_bar_name&#39;. You can override using the `.groups` argument.</code></pre>
-<pre class="r"><code>candy_2016 &lt;- pivot_candy %&gt;%
-  select(timestamp,  candy_bar_name, customer_satisfaction)  %&gt;%
-  filter(timestamp == &quot;2016&quot;)  %&gt;%
-  group_by(timestamp,  candy_bar_name) %&gt;%
-  summarise(timestamp, candy_bar_name, sum = sum(customer_satisfaction))  %&gt;%
-  arrange(desc(sum))  %&gt;%
-  head(1)</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;timestamp&#39;, &#39;candy_bar_name&#39;. You can override using the `.groups` argument.</code></pre>
-<pre class="r"><code>candy_2017 &lt;- pivot_candy %&gt;%
-  select(timestamp,  candy_bar_name, customer_satisfaction)  %&gt;%
-  filter(timestamp == &quot;2017&quot;)  %&gt;%
-  group_by(timestamp,  candy_bar_name) %&gt;%
-  summarise(timestamp, candy_bar_name, sum = sum(customer_satisfaction))  %&gt;%
-  arrange(desc(sum))  %&gt;%
-  head(1)</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;timestamp&#39;, &#39;candy_bar_name&#39;. You can override using the `.groups` argument.</code></pre>
-<pre class="r"><code>rbind(candy_2015,candy_2016,candy_2017)</code></pre>
+  group_by(timestamp,candy_bar_name) %&gt;%
+  summarise( sum = sum(customer_satisfaction))  %&gt;%
+  arrange(timestamp, desc(sum))  %&gt;%
+  slice_max(sum, n = 1)</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;timestamp&#39;. You can override using the `.groups` argument.</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["timestamp"],"name":[1],"type":["chr"],"align":["left"]},{"label":["candy_bar_name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["sum"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"2015","2":"reese_s_peanut_butter_cups","3":"4375"},{"1":"2016","2":"kit_kat","3":"920"},{"1":"2017","2":"reeses_pieces","3":"1403"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
@@ -638,9 +606,7 @@ candy_sum &lt;- candy_sum %&gt;%
 </div>
 <div id="what-was-the-most-popular-candy-bar-by-this-rating-for-people-in-us-canada-uk-and-all-other-countries" class="section level1" number="8">
 <h1><span class="header-section-number">8</span> 8. What was the most popular candy bar by this rating for people in US, Canada, UK and all other countries?</h1>
-<p>Assumption: ‘this rating’ == JOY (1)</p>
 <pre class="r"><code>country_candy &lt;- pivot_candy %&gt;%
-        filter(customer_satisfaction == 1)  %&gt;%
         mutate(country =  
           case_when(country  
                       %in% c(&quot;usa&quot;,&quot;canada&quot;,&quot;united kingdom&quot;) ~
@@ -650,15 +616,15 @@ candy_sum &lt;- candy_sum %&gt;%
              candy_bar_name, 
              customer_satisfaction)  %&gt;%
         filter(!is.na(country)) %&gt;%
-        group_by(country) %&gt;%
-        summarise( sum = sum(customer_satisfaction) )  
-
-country_candy %&gt;%
-    slice_max(sum, n = 5) %&gt;%   
-  arrange( desc(sum), country, .by_group = TRUE)  </code></pre>
+        group_by(country, candy_bar_name) %&gt;%
+        summarise( sum = sum(customer_satisfaction) )  </code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;country&#39;. You can override using the `.groups` argument.</code></pre>
+<pre class="r"><code>country_candy %&gt;%
+    slice_max(sum, n = 1) %&gt;%   
+  arrange(  country, sum, candy_bar_name)  </code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["country"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sum"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"usa","2":"145456"},{"1":"other","2":"48807"},{"1":"canada","2":"20708"},{"1":"united kingdom","2":"3207"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["country"],"name":[1],"type":["chr"],"align":["left"]},{"label":["candy_bar_name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["sum"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"canada","2":"kit_kat","3":"623"},{"1":"other","2":"kit_kat","3":"1510"},{"1":"united kingdom","2":"kit_kat","3":"93"},{"1":"usa","2":"kit_kat","3":"4429"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -884,10 +850,10 @@ plot(education)</code></pre>
 <h2><span class="header-section-number">14.1</span> 1. The client only counts a valid email address as one ending in ‘.com’. How many survey results have a valid email address.</h2>
 <pre class="r"><code>dog_survey %&gt;%
  select(email, contains(&quot;.com&quot;)) %&gt;%
-  summarise(sum(n()))</code></pre>
+  summarise(valid_email_addresses = sum(n()))</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["sum(n())"],"name":[1],"type":["int"],"align":["right"]}],"data":[{"1":"291"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["valid_email_addresses"],"name":[1],"type":["int"],"align":["right"]}],"data":[{"1":"291"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -913,24 +879,22 @@ dog_sums %&gt;%
   filter(substr(last_name,1,1) &gt;= &quot;N&quot;) 
 
 dog_sums %&gt;%
-  summarise(mean(dog_age))</code></pre>
+  summarise(average_dog_age_for_names_N_onwards = round(mean(dog_age)))</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["mean(dog_age)"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"53.80435"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["average_dog_age_for_names_N_onwards"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"54"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
 <div id="the-dog_age-column-is-the-age-in-dog-years.-if-the-conversion-is-1-human-year-6-dog-years-then-what-is-the-average-human-age-for-dogs-of-each-gender" class="section level2" number="14.4">
 <h2><span class="header-section-number">14.4</span> 4. The dog_age column is the age in dog years. If the conversion is 1 human year = 6 dog years, then what is the average human age for dogs of each gender?</h2>
-<pre class="r"><code>dog_sums &lt;- dog_survey %&gt;%
+<pre class="r"><code> dog_survey %&gt;%
               filter(!is.na(dog_age)) %&gt;%
-              group_by(dog_gender) 
-
-dog_sums %&gt;%
-  summarise(round(mean(dog_age/6)))</code></pre>
+              group_by(dog_gender) %&gt;%
+              summarise(human_years_dog_age = round(mean(dog_age/6)))</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["dog_gender"],"name":[1],"type":["chr"],"align":["left"]},{"label":["round(mean(dog_age/6))"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"F","2":"8"},{"1":"M","2":"8"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["dog_gender"],"name":[1],"type":["chr"],"align":["left"]},{"label":["human_years_dog_age"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"F","2":"8"},{"1":"M","2":"8"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -938,10 +902,9 @@ dog_sums %&gt;%
 <h2><span class="header-section-number">14.5</span> 5. Create a plot of results of question 4.</h2>
 <pre class="r"><code>dog_sums &lt;- dog_survey %&gt;%
               filter(!is.na(dog_age)) %&gt;%
-              group_by(dog_gender) 
+              group_by(dog_gender) %&gt;%
+              summarise(human_years_dog_age = round(mean(dog_age/6)))
 
-dog_sums &lt;- dog_sums %&gt;%
-  summarise(round(mean(dog_age/6)))
 colnames(dog_sums) &lt;- c(&quot;gender&quot;, &quot;age&quot;)
 
 dog_years &lt;- table(dog_sums)
