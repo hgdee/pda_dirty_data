@@ -1,5 +1,6 @@
 # Called from pda_dirty_data.Rmd
 # Handle dropping columns and merging the data
+# Howard Davies D12 PDA
 
 # List of 'starts with' values gained by examining data sets
 drop_cols_list <- c("please","which_state","which_day", "sourpatch", "spotted_dick", "those",

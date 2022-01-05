@@ -1,5 +1,6 @@
 # Called from pda_dirty_data.Rmd
 # Read in the candy data 
+# Howard Davies D12 PDA
 candy_data_1 <- read_excel(here::here("data/candy_ranking_data/boing-boing-candy-2016.xlsx"), na = "NA") %>% 
                           clean_names() 
 candy_data_2 <- read_excel(here::here("data/candy_ranking_data/boing-boing-candy-2017.xlsx"), na = "NA") %>% 
@@ -42,7 +43,7 @@ candy_data_1$country <- candy_data_1$country %>%
 candy_data_2$country <- candy_data_2$country %>%
   replace(., is.na(.), "NA")
 
-#Get rid of the long country names
+# Get cols into reuired order
 candy_data_1 <- candy_data_1 %>% select (1,2,3,4,124, everything())
 candy_data_2 <- candy_data_2 %>% select (1,2,3,4,124, everything())
 
