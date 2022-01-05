@@ -223,7 +223,6 @@ pivot_candy %>%
 
 # For the next three questions, count despair as -1, joy as +1 and meh as 0.
 
-## 6 (?) What was the most popular candy bar by this rating system for each gender in the dataset?
 
 ```{r}
 
@@ -239,74 +238,38 @@ pivot_candy$customer_satisfaction <- as.numeric(pivot_candy$customer_satisfactio
 pivot_candy[pivot_candy == "I'd rather not say"] <- "Other"
 ```
 
- As any full sized candy bar may not qualify took it out
-
+## 6 (?) What was the most popular candy bar by this rating system for each gender in the dataset?
 ```{r}
-
-candy_sum <- pivot_candy %>%
-  select(your_gender, candy_bar_name, customer_satisfaction)  %>%
-  group_by(your_gender, candy_bar_name) 
-
-candy_sum <- candy_sum %>%
-  filter(!is.na(your_gender)) %>%
-  filter(!is.na(candy_bar_name)) %>%
-  summarise(sum = sum(customer_satisfaction))  %>%
-  arrange(desc(sum))
-
-rbind( 
-    candy_sum %>%
-      filter(your_gender == "Female") %>%
-      head(1),
-    candy_sum %>%
-      filter(your_gender == "Male") %>%
-      head(1),
-    candy_sum %>%
-      filter(your_gender == "Other") %>%
-      head(1)
-)
-
-
+pivot_candy %>%
+  select(your_gender,  candy_bar_name, customer_satisfaction)  %>%
+  filter(!is.na(your_gender))  %>%
+  group_by(your_gender,candy_bar_name) %>%
+  summarise( sum = sum(customer_satisfaction))  %>%
+  arrange(your_gender, desc(sum))  %>%
+  slice_max(sum, n = 1)
 ```
+
 # 7 What was the most popular candy bar in each year?
 
+
 ```{r}
-candy_2015 <- pivot_candy %>%
+  pivot_candy %>%
   select(timestamp,  candy_bar_name, customer_satisfaction)  %>%
-  filter(timestamp == "2015")  %>%
-  group_by(timestamp,  candy_bar_name) %>%
-  summarise(timestamp, candy_bar_name, sum = sum(customer_satisfaction))  %>%
-  arrange(desc(sum))  %>%
-  head(1)
-
-candy_2016 <- pivot_candy %>%
-  select(timestamp,  candy_bar_name, customer_satisfaction)  %>%
-  filter(timestamp == "2016")  %>%
-  group_by(timestamp,  candy_bar_name) %>%
-  summarise(timestamp, candy_bar_name, sum = sum(customer_satisfaction))  %>%
-  arrange(desc(sum))  %>%
-  head(1)
-
-candy_2017 <- pivot_candy %>%
-  select(timestamp,  candy_bar_name, customer_satisfaction)  %>%
-  filter(timestamp == "2017")  %>%
-  group_by(timestamp,  candy_bar_name) %>%
-  summarise(timestamp, candy_bar_name, sum = sum(customer_satisfaction))  %>%
-  arrange(desc(sum))  %>%
-  head(1)
-
-rbind(candy_2015,candy_2016,candy_2017)
-
+  group_by(timestamp,candy_bar_name) %>%
+  summarise( sum = sum(customer_satisfaction))  %>%
+  arrange(timestamp, desc(sum))  %>%
+  slice_max(sum, n = 1)
 ```
+
 
 # 8. What was the most popular candy bar by this rating for people in US, Canada, UK and all other countries?
 
-Assumption: 'this rating' == JOY (1)
+
 
 ```{r}
 
 
 country_candy <- pivot_candy %>%
-        filter(customer_satisfaction == 1)  %>%
         mutate(country =  
           case_when(country  
                       %in% c("usa","canada","united kingdom") ~
@@ -316,12 +279,12 @@ country_candy <- pivot_candy %>%
              candy_bar_name, 
              customer_satisfaction)  %>%
         filter(!is.na(country)) %>%
-        group_by(country) %>%
+        group_by(country, candy_bar_name) %>%
         summarise( sum = sum(customer_satisfaction) )  
 
 country_candy %>%
-    slice_max(sum, n = 5) %>%   
-  arrange( desc(sum), country, .by_group = TRUE)  
+    slice_max(sum, n = 1) %>%   
+  arrange(  country, sum, candy_bar_name)  
 
 
 ```
@@ -441,7 +404,7 @@ glimpse(dog_survey)
 ```{r}
 dog_survey %>%
  select(email, contains(".com")) %>%
-  summarise(sum(n()))
+  summarise(valid_email_addresses = sum(n()))
   
 ```
 
@@ -467,19 +430,19 @@ dog_sums <- dog_survey %>%
   filter(substr(last_name,1,1) >= "N") 
 
 dog_sums %>%
-  summarise(mean(dog_age))
+  summarise(average_dog_age_for_names_N_onwards = round(mean(dog_age)))
 
 ```
 
 ## 4. The dog_age column is the age in dog years. If the conversion is 1 human year = 6 dog years, then what is the average human age for dogs of each gender?
 
 ```{r}
-dog_sums <- dog_survey %>%
+ dog_survey %>%
               filter(!is.na(dog_age)) %>%
-              group_by(dog_gender) 
+              group_by(dog_gender) %>%
+              summarise(human_years_dog_age = round(mean(dog_age/6)))
 
-dog_sums %>%
-  summarise(round(mean(dog_age/6)))
+
 ```
 
 ## 5. Create a plot of results of question 4.
@@ -487,10 +450,9 @@ dog_sums %>%
 ```{r}
 dog_sums <- dog_survey %>%
               filter(!is.na(dog_age)) %>%
-              group_by(dog_gender) 
+              group_by(dog_gender) %>%
+              summarise(human_years_dog_age = round(mean(dog_age/6)))
 
-dog_sums <- dog_sums %>%
-  summarise(round(mean(dog_age/6)))
 colnames(dog_sums) <- c("gender", "age")
 
 dog_years <- table(dog_sums)
