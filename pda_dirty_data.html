@@ -370,105 +370,108 @@ library(testthat)</code></pre>
 <h1><span class="header-section-number">3</span> 1.4 Task 4 - Halloween Candy Data</h1>
 <p>The data is in files boing-boing-candy-2015.xlxs, boing-boing-candy-2016.xlxs and boing-boing-candy-2017.xlxs. Bear in mind that this is trickier compared with tasks 1, 2 &amp; 3.</p>
 <pre class="r"><code>source(here::here(&quot;R_scripts/read_in_candy_data.R&quot;))</code></pre>
-<pre><code>## Warning: Unknown or uninitialised column: `which_country_do_you_live_in`.</code></pre>
+<pre><code>## Warning: Unknown or uninitialised column: `country`.</code></pre>
+<pre><code>## Warning: Unknown or uninitialised column: `your_gender`.</code></pre>
 <pre><code>## Warning in eval(ei, envir): NAs introduced by coercion</code></pre>
 <pre><code>## Warning in eval(ei, envir): NAs introduced by coercion to integer range</code></pre>
 <pre><code>## Warning in eval(ei, envir): NAs introduced by coercion
 
 ## Warning in eval(ei, envir): NAs introduced by coercion</code></pre>
 <pre><code>## Warning in eval(ei, envir): NAs introduced by coercion to integer range</code></pre>
-<div id="output-to-show-valid-which_country_do_you_live_in-data" class="section level2" number="3.1">
-<h2><span class="header-section-number">3.1</span> Output to show valid which_country_do_you_live_in data</h2>
+<div id="output-to-show-valid-country-data" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Output to show valid country data</h2>
 <pre><code>2015 was populated using 2016 residence data and looping to populate
-the larger data set.</code></pre>
+the larger data set. Tried cbind but it didn&#39;t like the row differentials.</code></pre>
 </div>
 </div>
 <div id="now-the-three-years-of-data-need-to-be-merged." class="section level1" number="4">
 <h1><span class="header-section-number">4</span> Now the three years of data need to be merged.</h1>
 <pre class="r"><code>source(here::here(&quot;R_scripts/drop_cols_and_merge.R&quot;))</code></pre>
+<pre><code>## Joining, by = c(&quot;timestamp&quot;, &quot;are_you_going_actually_going_trick_or_treating_yourself&quot;, &quot;your_gender&quot;, &quot;how_old_are_you&quot;, &quot;country&quot;, &quot;x100_grand_bar&quot;, &quot;black_jacks&quot;, &quot;bonkers_the_candy&quot;, &quot;boxo_raisins&quot;, &quot;butterfinger&quot;, &quot;cadbury_creme_eggs&quot;, &quot;candy_corn&quot;, &quot;caramellos&quot;, &quot;chick_o_sticks_we_don_t_know_what_that_is&quot;, &quot;chiclets&quot;, &quot;coffee_crisp&quot;, &quot;goo_goo_clusters&quot;, &quot;good_n_plenty&quot;, &quot;gum_from_baseball_cards&quot;, &quot;gummy_bears_straight_up&quot;, &quot;hard_candy&quot;, &quot;healthy_fruit&quot;, &quot;hersheys_dark_chocolate&quot;, &quot;hershey_s_milk_chocolate&quot;, &quot;hersheys_kisses&quot;, &quot;jolly_rancher_bad_flavor&quot;, &quot;jolly_ranchers_good_flavor&quot;, &quot;junior_mints&quot;, &quot;senior_mints&quot;, &quot;kinder_happy_hippo&quot;, &quot;kit_kat&quot;, &quot;laffy_taffy&quot;, &quot;lemon_heads&quot;, &quot;licorice_not_black&quot;, &quot;licorice_yes_black&quot;, &quot;lindt_truffle&quot;, &quot;lollipops&quot;, &quot;mars&quot;, &quot;mary_janes&quot;, &quot;maynards&quot;, &quot;milk_duds&quot;, &quot;milky_way&quot;, &quot;regular_m_ms&quot;, &quot;peanut_m_m_s&quot;, &quot;blue_m_ms&quot;, &quot;red_m_ms&quot;, &quot;third_party_m_ms&quot;, &quot;minibags_of_chips&quot;, &quot;mint_kisses&quot;, &quot;necco_wafers&quot;, &quot;nestle_crunch&quot;, &quot;nown_laters&quot;, &quot;pencils&quot;, &quot;pixy_stix&quot;, &quot;reese_s_peanut_butter_cups&quot;, &quot;reeses_pieces&quot;, &quot;reggie_jackson_bar&quot;, &quot;rolos&quot;, &quot;skittles&quot;, &quot;smarties_american&quot;, &quot;smarties_commonwealth&quot;, &quot;snickers&quot;, &quot;starburst&quot;, &quot;sweet_tarts&quot;, &quot;sweetums_a_friend_to_diabetes&quot;, &quot;tic_tacs&quot;, &quot;tolberone_something_or_other&quot;, &quot;trail_mix&quot;, &quot;twix&quot;)</code></pre>
+<pre><code>## Joining, by = c(&quot;timestamp&quot;, &quot;are_you_going_actually_going_trick_or_treating_yourself&quot;, &quot;your_gender&quot;, &quot;how_old_are_you&quot;, &quot;country&quot;, &quot;x100_grand_bar&quot;, &quot;black_jacks&quot;, &quot;butterfinger&quot;, &quot;cadbury_creme_eggs&quot;, &quot;candy_corn&quot;, &quot;caramellos&quot;, &quot;chick_o_sticks_we_don_t_know_what_that_is&quot;, &quot;chiclets&quot;, &quot;goo_goo_clusters&quot;, &quot;good_n_plenty&quot;, &quot;gum_from_baseball_cards&quot;, &quot;gummy_bears_straight_up&quot;, &quot;hard_candy&quot;, &quot;healthy_fruit&quot;, &quot;hershey_s_milk_chocolate&quot;, &quot;jolly_rancher_bad_flavor&quot;, &quot;jolly_ranchers_good_flavor&quot;, &quot;junior_mints&quot;, &quot;senior_mints&quot;, &quot;kinder_happy_hippo&quot;, &quot;kit_kat&quot;, &quot;laffy_taffy&quot;, &quot;lemon_heads&quot;, &quot;licorice_not_black&quot;, &quot;lindt_truffle&quot;, &quot;lollipops&quot;, &quot;mars&quot;, &quot;mary_janes&quot;, &quot;maynards&quot;, &quot;milk_duds&quot;, &quot;milky_way&quot;, &quot;regular_m_ms&quot;, &quot;peanut_m_m_s&quot;, &quot;minibags_of_chips&quot;, &quot;mint_kisses&quot;, &quot;necco_wafers&quot;, &quot;nestle_crunch&quot;, &quot;nown_laters&quot;, &quot;pencils&quot;, &quot;pixy_stix&quot;, &quot;reese_s_peanut_butter_cups&quot;, &quot;reggie_jackson_bar&quot;, &quot;rolos&quot;, &quot;skittles&quot;, &quot;smarties_american&quot;, &quot;smarties_commonwealth&quot;, &quot;snickers&quot;, &quot;starburst&quot;, &quot;tolberone_something_or_other&quot;, &quot;trail_mix&quot;, &quot;twix&quot;)</code></pre>
 <pre class="r"><code>glimpse(candy_data)</code></pre>
 <pre><code>## Rows: 9,348
 ## Columns: 80
-## $ timestamp                                               &lt;chr&gt; &quot;2015&quot;, &quot;2015&quot;~
-## $ your_gender                                             &lt;chr&gt; &quot;Female&quot;, &quot;Fem~
-## $ how_old_are_you                                         &lt;int&gt; 0, 0, 5, 6, 6,~
-## $ are_you_going_actually_going_trick_or_treating_yourself &lt;chr&gt; NA, NA, NA, NA~
-## $ which_country_do_you_live_in                            &lt;chr&gt; &quot;usa&quot;, &quot;usa&quot;, ~
-## $ x100_grand_bar                                          &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
-## $ black_jacks                                             &lt;chr&gt; &quot;DESPAIR&quot;, &quot;JO~
+## $ timestamp                                               &lt;chr&gt; &quot;2016&quot;, &quot;2016&quot;~
+## $ are_you_going_actually_going_trick_or_treating_yourself &lt;chr&gt; &quot;No&quot;, &quot;No&quot;, &quot;N~
+## $ your_gender                                             &lt;chr&gt; &quot;Male&quot;, &quot;Male&quot;~
+## $ how_old_are_you                                         &lt;int&gt; 22, 45, 48, 57~
+## $ country                                                 &lt;chr&gt; &quot;canada&quot;, &quot;usa~
+## $ x100_grand_bar                                          &lt;chr&gt; &quot;JOY&quot;, &quot;MEH&quot;, ~
+## $ black_jacks                                             &lt;chr&gt; &quot;MEH&quot;, &quot;JOY&quot;, ~
+## $ bonkers_the_candy                                       &lt;chr&gt; &quot;MEH&quot;, &quot;DESPAI~
+## $ boxo_raisins                                            &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
 ## $ butterfinger                                            &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
-## $ cadbury_creme_eggs                                      &lt;chr&gt; &quot;DESPAIR&quot;, &quot;JO~
-## $ candy_corn                                              &lt;chr&gt; &quot;JOY&quot;, &quot;DESPAI~
+## $ cadbury_creme_eggs                                      &lt;chr&gt; &quot;JOY&quot;, &quot;DESPAI~
+## $ candy_corn                                              &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
 ## $ caramellos                                              &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
-## $ chick_o_sticks_we_don_t_know_what_that_is               &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
-## $ chiclets                                                &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
-## $ goo_goo_clusters                                        &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
-## $ good_n_plenty                                           &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
+## $ chick_o_sticks_we_don_t_know_what_that_is               &lt;chr&gt; &quot;MEH&quot;, &quot;JOY&quot;, ~
+## $ chiclets                                                &lt;chr&gt; &quot;MEH&quot;, &quot;DESPAI~
+## $ coffee_crisp                                            &lt;chr&gt; &quot;JOY&quot;, &quot;MEH&quot;, ~
+## $ goo_goo_clusters                                        &lt;chr&gt; &quot;DESPAIR&quot;, &quot;JO~
+## $ good_n_plenty                                           &lt;chr&gt; &quot;JOY&quot;, &quot;DESPAI~
 ## $ gum_from_baseball_cards                                 &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
-## $ gummy_bears_straight_up                                 &lt;chr&gt; &quot;DESPAIR&quot;, &quot;JO~
-## $ hard_candy                                              &lt;chr&gt; &quot;DESPAIR&quot;, &quot;JO~
-## $ healthy_fruit                                           &lt;chr&gt; &quot;JOY&quot;, &quot;DESPAI~
-## $ hershey_s_milk_chocolate                                &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
-## $ jolly_rancher_bad_flavor                                &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
+## $ gummy_bears_straight_up                                 &lt;chr&gt; &quot;JOY&quot;, &quot;DESPAI~
+## $ hard_candy                                              &lt;chr&gt; &quot;JOY&quot;, &quot;DESPAI~
+## $ healthy_fruit                                           &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
+## $ hersheys_dark_chocolate                                 &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
+## $ hershey_s_milk_chocolate                                &lt;chr&gt; &quot;JOY&quot;, &quot;MEH&quot;, ~
+## $ hersheys_kisses                                         &lt;chr&gt; &quot;JOY&quot;, &quot;MEH&quot;, ~
+## $ jolly_rancher_bad_flavor                                &lt;chr&gt; &quot;MEH&quot;, &quot;DESPAI~
 ## $ jolly_ranchers_good_flavor                              &lt;chr&gt; &quot;JOY&quot;, &quot;DESPAI~
-## $ junior_mints                                            &lt;chr&gt; &quot;JOY&quot;, &quot;DESPAI~
-## $ senior_mints                                            &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
-## $ kinder_happy_hippo                                      &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
-## $ kit_kat                                                 &lt;chr&gt; &quot;DESPAIR&quot;, &quot;JO~
-## $ laffy_taffy                                             &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
-## $ lemon_heads                                             &lt;chr&gt; &quot;DESPAIR&quot;, &quot;JO~
-## $ licorice_not_black                                      &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
-## $ lindt_truffle                                           &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
-## $ lollipops                                               &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
+## $ junior_mints                                            &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
+## $ senior_mints                                            &lt;chr&gt; &quot;JOY&quot;, &quot;DESPAI~
+## $ kinder_happy_hippo                                      &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
+## $ kit_kat                                                 &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
+## $ laffy_taffy                                             &lt;chr&gt; &quot;JOY&quot;, &quot;MEH&quot;, ~
+## $ lemon_heads                                             &lt;chr&gt; &quot;JOY&quot;, &quot;DESPAI~
+## $ licorice_not_black                                      &lt;chr&gt; &quot;JOY&quot;, &quot;DESPAI~
+## $ licorice_yes_black                                      &lt;chr&gt; &quot;DESPAIR&quot;, &quot;JO~
+## $ lindt_truffle                                           &lt;chr&gt; &quot;JOY&quot;, &quot;MEH&quot;, ~
+## $ lollipops                                               &lt;chr&gt; &quot;JOY&quot;, &quot;DESPAI~
 ## $ mars                                                    &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
 ## $ mary_janes                                              &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
-## $ maynards                                                &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
+## $ maynards                                                &lt;chr&gt; &quot;JOY&quot;, &quot;MEH&quot;, ~
 ## $ milk_duds                                               &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
 ## $ milky_way                                               &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
-## $ regular_m_ms                                            &lt;chr&gt; &quot;DESPAIR&quot;, &quot;JO~
+## $ regular_m_ms                                            &lt;chr&gt; &quot;JOY&quot;, &quot;DESPAI~
 ## $ peanut_m_m_s                                            &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
-## $ minibags_of_chips                                       &lt;chr&gt; NA, &quot;DESPAIR&quot;,~
-## $ mint_kisses                                             &lt;chr&gt; NA, &quot;JOY&quot;, &quot;JO~
-## $ necco_wafers                                            &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
-## $ nestle_crunch                                           &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
+## $ blue_m_ms                                               &lt;chr&gt; &quot;JOY&quot;, &quot;MEH&quot;, ~
+## $ red_m_ms                                                &lt;chr&gt; &quot;JOY&quot;, &quot;MEH&quot;, ~
+## $ third_party_m_ms                                        &lt;chr&gt; &quot;MEH&quot;, &quot;DESPAI~
+## $ minibags_of_chips                                       &lt;chr&gt; &quot;JOY&quot;, &quot;DESPAI~
+## $ mint_kisses                                             &lt;chr&gt; &quot;JOY&quot;, &quot;MEH&quot;, ~
+## $ necco_wafers                                            &lt;chr&gt; &quot;DESPAIR&quot;, &quot;ME~
+## $ nestle_crunch                                           &lt;chr&gt; &quot;DESPAIR&quot;, &quot;ME~
 ## $ nown_laters                                             &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
-## $ pencils                                                 &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
-## $ pixy_stix                                               &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
+## $ pencils                                                 &lt;chr&gt; &quot;DESPAIR&quot;, &quot;JO~
+## $ pixy_stix                                               &lt;chr&gt; &quot;JOY&quot;, &quot;MEH&quot;, ~
 ## $ reese_s_peanut_butter_cups                              &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
-## $ reggie_jackson_bar                                      &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
+## $ reeses_pieces                                           &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
+## $ reggie_jackson_bar                                      &lt;chr&gt; &quot;JOY&quot;, &quot;MEH&quot;, ~
 ## $ rolos                                                   &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
-## $ skittles                                                &lt;chr&gt; &quot;JOY&quot;, &quot;DESPAI~
-## $ smarties_american                                       &lt;chr&gt; &quot;DESPAIR&quot;, &quot;JO~
-## $ smarties_commonwealth                                   &lt;chr&gt; &quot;DESPAIR&quot;, &quot;JO~
+## $ skittles                                                &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
+## $ smarties_american                                       &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
+## $ smarties_commonwealth                                   &lt;chr&gt; &quot;JOY&quot;, &quot;DESPAI~
 ## $ snickers                                                &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
-## $ starburst                                               &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
+## $ starburst                                               &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
+## $ sweet_tarts                                             &lt;chr&gt; &quot;JOY&quot;, &quot;DESPAI~
+## $ sweetums_a_friend_to_diabetes                           &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
+## $ tic_tacs                                                &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
 ## $ tolberone_something_or_other                            &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
-## $ trail_mix                                               &lt;chr&gt; &quot;JOY&quot;, &quot;DESPAI~
+## $ trail_mix                                               &lt;chr&gt; &quot;DESPAIR&quot;, &quot;ME~
 ## $ twix                                                    &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
-## $ bonkers_the_candy                                       &lt;chr&gt; NA, NA, NA, NA~
-## $ boxo_raisins                                            &lt;chr&gt; NA, NA, NA, NA~
-## $ coffee_crisp                                            &lt;chr&gt; NA, NA, NA, NA~
-## $ hersheys_dark_chocolate                                 &lt;chr&gt; NA, NA, NA, NA~
-## $ hersheys_kisses                                         &lt;chr&gt; NA, NA, NA, NA~
-## $ licorice_yes_black                                      &lt;chr&gt; NA, NA, NA, NA~
-## $ blue_m_ms                                               &lt;chr&gt; NA, NA, NA, NA~
-## $ red_m_ms                                                &lt;chr&gt; NA, NA, NA, NA~
-## $ third_party_m_ms                                        &lt;chr&gt; NA, NA, NA, NA~
-## $ reeses_pieces                                           &lt;chr&gt; NA, NA, NA, NA~
-## $ sweet_tarts                                             &lt;chr&gt; NA, NA, NA, NA~
-## $ sweetums_a_friend_to_diabetes                           &lt;chr&gt; NA, NA, NA, NA~
-## $ tic_tacs                                                &lt;chr&gt; NA, NA, NA, NA~
-## $ bonkers                                                 &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
-## $ box_o_raisins                                           &lt;chr&gt; NA, &quot;DESPAIR&quot;,~
-## $ brach_products_not_including_candy_corn                 &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
-## $ bubble_gum                                              &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
-## $ dark_chocolate_hershey                                  &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
-## $ hershey_s_kissables                                     &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
-## $ licorice                                                &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~
-## $ mint_m_ms                                               &lt;chr&gt; &quot;DESPAIR&quot;, &quot;JO~
-## $ ribbon_candy                                            &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
-## $ sweetums                                                &lt;chr&gt; &quot;DESPAIR&quot;, &quot;DE~
-## $ peanut_butter_bars                                      &lt;chr&gt; &quot;JOY&quot;, &quot;JOY&quot;, ~</code></pre>
+## $ bonkers                                                 &lt;chr&gt; NA, NA, NA, NA~
+## $ box_o_raisins                                           &lt;chr&gt; NA, NA, NA, NA~
+## $ brach_products_not_including_candy_corn                 &lt;chr&gt; NA, NA, NA, NA~
+## $ bubble_gum                                              &lt;chr&gt; NA, NA, NA, NA~
+## $ dark_chocolate_hershey                                  &lt;chr&gt; NA, NA, NA, NA~
+## $ hershey_s_kissables                                     &lt;chr&gt; NA, NA, NA, NA~
+## $ licorice                                                &lt;chr&gt; NA, NA, NA, NA~
+## $ mint_m_ms                                               &lt;chr&gt; NA, NA, NA, NA~
+## $ ribbon_candy                                            &lt;chr&gt; NA, NA, NA, NA~
+## $ sweetums                                                &lt;chr&gt; NA, NA, NA, NA~
+## $ peanut_butter_bars                                      &lt;chr&gt; NA, NA, NA, NA~</code></pre>
 </div>
 <div id="analysis-questions-1" class="section level1" number="5">
 <h1><span class="header-section-number">5</span> 1.4.2 Analysis questions</h1>
@@ -486,17 +489,6 @@ the larger data set.</code></pre>
 </div>
 <div id="what-was-the-average-age-of-people-who-are-going-out-trick-or-treating-and-the-average-age-of-people-not-going-trick-or-treating" class="section level2" number="5.2">
 <h2><span class="header-section-number">5.2</span> 2. What was the average age of people who are going out trick or treating and the average age of people not going trick or treating?</h2>
-<pre class="r"><code>candy_data %&gt;%
-  select(are_you_going_actually_going_trick_or_treating_yourself, 
-          how_old_are_you) %&gt;%
-  drop_na() %&gt;%
-  group_by(are_you_going_actually_going_trick_or_treating_yourself) %&gt;%
-  summarise(mean = round(mean(how_old_are_you)))</code></pre>
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["are_you_going_actually_going_trick_or_treating_yourself"],"name":[1],"type":["chr"],"align":["left"]},{"label":["mean"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"No","2":"42"},{"1":"Yes","2":"40"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
 <pre class="r"><code>  # as many ages are implausible (0-300) restrict the age to 5-100
 candy_data %&gt;%
   select(are_you_going_actually_going_trick_or_treating_yourself, 
@@ -507,7 +499,7 @@ candy_data %&gt;%
   summarise(mean = round(mean(how_old_are_you)))</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["are_you_going_actually_going_trick_or_treating_yourself"],"name":[1],"type":["chr"],"align":["left"]},{"label":["mean"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"No","2":"42"},{"1":"Yes","2":"38"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["are_you_going_actually_going_trick_or_treating_yourself"],"name":[1],"type":["chr"],"align":["left"]},{"label":["mean"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"No","2":"39"},{"1":"Yes","2":"35"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -516,18 +508,16 @@ candy_data %&gt;%
 <pre class="r"><code>pivot_candy &lt;- candy_data  %&gt;%
     pivot_longer(cols=6:80,   names_to = &quot;candy_bar_name&quot;, 
                               values_to = &quot;customer_satisfaction&quot;,
-                              values_drop_na = TRUE)
-
-# pivot_candy_group &lt;- pivot_candy %&gt;% 
+                              values_drop_na = TRUE)</code></pre>
+<pre class="r"><code># pivot_candy_group &lt;- pivot_candy %&gt;% 
    #  select(candy_bar_name,   customer_satisfaction)  %&gt;%
   #   group_by( customer_satisfaction) %&gt;%
  #     mutate(candy_bar_num = n()) 
     
  #pivot_candy_group %&gt;%
 #    arrange(customer_satisfaction, candy_bar_name, candy_bar_num) %&gt;%
-#    top_n(customer_satisfaction, n=1)
-
-pivot_candy %&gt;% 
+#    top_n(customer_satisfaction, n=1)</code></pre>
+<pre class="r"><code>pivot_candy %&gt;% 
       group_by(candy_bar_name)  %&gt;%
       filter(customer_satisfaction == &quot;DESPAIR&quot;) %&gt;%
       select(candy_bar_name,customer_satisfaction)  %&gt;%
@@ -608,7 +598,7 @@ candy_sum &lt;- candy_sum %&gt;%
 )</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["your_gender"],"name":[1],"type":["chr"],"align":["left"]},{"label":["candy_bar_name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["sum"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"Female","2":"kit_kat","3":"5106"},{"1":"Male","2":"kit_kat","3":"1439"},{"1":"Other","2":"kit_kat","3":"92"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["your_gender"],"name":[1],"type":["chr"],"align":["left"]},{"label":["candy_bar_name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["sum"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"Female","2":"kit_kat","3":"2182"},{"1":"Male","2":"kit_kat","3":"4181"},{"1":"Other","2":"kit_kat","3":"244"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -648,28 +638,27 @@ candy_sum &lt;- candy_sum %&gt;%
 </div>
 <div id="what-was-the-most-popular-candy-bar-by-this-rating-for-people-in-us-canada-uk-and-all-other-countries" class="section level1" number="8">
 <h1><span class="header-section-number">8</span> 8. What was the most popular candy bar by this rating for people in US, Canada, UK and all other countries?</h1>
+<p>Assumption: ‘this rating’ == JOY (1)</p>
 <pre class="r"><code>country_candy &lt;- pivot_candy %&gt;%
-        mutate(which_country_do_you_live_in =  
-          case_when(which_country_do_you_live_in  
+        filter(customer_satisfaction == 1)  %&gt;%
+        mutate(country =  
+          case_when(country  
                       %in% c(&quot;usa&quot;,&quot;canada&quot;,&quot;united kingdom&quot;) ~
-                      which_country_do_you_live_in, 
+                      country, 
                       TRUE ~ &quot;other&quot; )) %&gt;%
-        select(which_country_do_you_live_in,  
+        select(country,  
              candy_bar_name, 
              customer_satisfaction)  %&gt;%
-        filter(!is.na(which_country_do_you_live_in)) %&gt;%
-        group_by(which_country_do_you_live_in,  candy_bar_name) 
+        filter(!is.na(country)) %&gt;%
+        group_by(country) %&gt;%
+        summarise( sum = sum(customer_satisfaction) )  
 
 country_candy %&gt;%
-  summarise( sum = sum(case_when(customer_satisfaction == &quot;MEH&quot; ~ 0,
-                                 customer_satisfaction == &quot;DESPAIR&quot; ~ -1,
-                                 customer_satisfaction == &quot;JOY&quot; ~ 1)))  %&gt;%
-     top_n(1,sum) %&gt;%  # Want to use slice_max as top_n but won&#39;t work 
-  arrange(which_country_do_you_live_in, desc(sum), .by_group = TRUE)  </code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;which_country_do_you_live_in&#39;. You can override using the `.groups` argument.</code></pre>
+    slice_max(sum, n = 5) %&gt;%   
+  arrange( desc(sum), country, .by_group = TRUE)  </code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["which_country_do_you_live_in"],"name":[1],"type":["chr"],"align":["left"]},{"label":["candy_bar_name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["sum"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["country"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sum"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"usa","2":"145456"},{"1":"other","2":"48807"},{"1":"canada","2":"20708"},{"1":"united kingdom","2":"3207"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>

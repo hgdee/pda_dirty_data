@@ -60,6 +60,7 @@ candy_data_2 <- candy_data_2 %>% select (1,2,3,4,124, everything())
 # It is assumed that as the data is untouched it is random and reflects 
 # probable 'real' values. 
 # Also do the missing your_gender field at the same time
+
 j <- 1
 for(i in 1:nrow(candy_data_3)) {
   
@@ -67,8 +68,12 @@ for(i in 1:nrow(candy_data_3)) {
   candy_data_3$country[i] =  
     candy_data_1$country[j]
   
-  candy_data_3$your_gender =  
+  candy_data_3$your_gender[i] =  
     candy_data_1$your_gender[j]
+  
+#  candy_data_3$are_you_going_trick_or_treating[i] =  
+#    candy_data_1$are_you_going_trick_or_treating[j]
+  
   if(j == nrow(candy_data_1)){
     
     #We need to reset the candy_data_1 index
@@ -78,12 +83,12 @@ for(i in 1:nrow(candy_data_3)) {
     
     j <- j + 1
     
-  }
+ }
   
 }
 
 # Change the column order for candy_data_3 
-candy_data_3 <- candy_data_3[,c(1,4,126,2,125, 5:124)]
+candy_data_3 <- candy_data_3[,c(1,2,3,126,125, 4:124)]
 
 # Convert age to numeric
 candy_data_1$how_old_are_you <- as.integer(candy_data_1$how_old_are_you)

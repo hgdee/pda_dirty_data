@@ -33,15 +33,18 @@ hit_list <- candy_data_3 %>%
 
 candy_data_3 <- subset(candy_data_3,select = names(candy_data_3) %ni% (names(hit_list)))
 
+# Change the order so that all non-candy columns are first 
+# candy_data_3 <- candy_data_3 %>% select (1,2,3,4, 5, everything())
+
 # Try a merge on cleaner data sets
 #first_merge <- merge(candy_data_1,candy_data_2, by = intersect(names(candy_data_1), names(candy_data_2)),  all = TRUE, 
  #                    sort = TRUE,  no.dups = TRUE,
   #                   incomparables = NULL )
-first_merge <- full_join(candy_data_1, candy_data_2)
+ first_merge <- full_join(candy_data_1, candy_data_2)
 #second_merge <- merge(first_merge,candy_data_3, by = intersect(names(first_merge), names(candy_data_3)),  all = TRUE, 
  #                     sort = TRUE,  no.dups = TRUE,
   #                    incomparables = NULL )
-second_merge <- full_join(first_merge, candy_data_3)
+ second_merge <- full_join(first_merge, candy_data_3)
 
 # Check we have no columns full of NA
 names(which(colSums(is.na(second_merge)) == nrow(second_merge)))
@@ -49,8 +52,7 @@ names(which(colSums(is.na(second_merge)) == nrow(second_merge)))
 # the data is now cleaned-ish and ready to use.
 candy_data <- second_merge
 
-# Change the order so that all non-candy columns are first - move gender
-candy_data <- candy_data %>% select (1,2,3, 56, everything())
+
 
 # Back up the data at this stage
 write_rds(candy_data,here::here("Cleaned_data/candy_data.rds"))
