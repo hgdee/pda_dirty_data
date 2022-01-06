@@ -24,13 +24,27 @@ library(testthat)
 This data is contained in the .rds file decathlon.rds. You’ll need to use read_rds() from readr to open it.
 
 # Call R file to process the rds file.
+ 
 
+
+# Outline of the decathlon data and analysis
+The decathlon data is a small dataset of the decastar and olympic decathlon competitions. It is not clear to me which year, and dates, the data was derived from.
+
+I have made no significant assumptions about the data and have no reason to doubt the accuracy of the data. The data seems to be generally clean and viable.
+
+The initial steps of cleaning were to turn rownames into a column called competitor, which will make analysis easier.  I relied on janitor's clean_names to amend the case and column names otherwise.
+
+The analysis code is below but overall my conclusions are, unsurprisingly, the same competitors were at the top of both competitions and that results were better in the olympic games.
+
+
+# This file calls in the data and does the wrangling.
 ```{r}
 source(here::here("R_scripts/read_rds_data.R"))
 ```
 
 ```{r}
-decathlon_data  
+
+decathlon_data  <- read_rds(here::here("Cleaned_data/decathlon_data.rds"))
 ```
 
 
@@ -38,22 +52,27 @@ decathlon_data
   ## 1 Who had the longest long jump seen in the data?
 ```{r}
 decathlon_data %>% 
-  filter(long_jump == max(long_jump))
+  filter(long_jump == max(long_jump)) %>%
+  select(competitor, long_jump, competition)
 ```
+The current olympic record is 8.95 so this result is way short of that record, but is higher than the olympic decathlon record of 7.72 - held by Sebrle.
 
-  ## 2 What was the average 100m time in each competition?
+## 2 What was the average 100m time in each competition?
 ```{r}
 decathlon_data %>% 
   group_by(competition) %>%
    summarise(mean(x100m))
 ```
+As expected, the olympic time is better than the decastar as it is more prestigious and comeptitors would build training to peak at the games.  
   
 ## 3 Who had the highest total points across both competitions?
 ```{r}
 decathlon_data %>% 
   filter(points== max(points))
 ```
-  ## 4 What was the shot-put scores for the top three competitors in each competition?
+ Sebrle got 8893 points and the olympic record is Kevin Mayer 9126 pts (2018)
+ 
+## 4 What was the shot-put scores for the top three competitors in each competition?
 ```{r}
 rbind(decathlon_data %>% 
   filter(competition == "olympicg") %>%
@@ -68,10 +87,11 @@ rbind(decathlon_data %>%
   arrange(desc(shot_put)) %>%
   head(3))
 
-
-
 ```
   
+The usual suspects dominate.
+
+
 ## 5 What was the average points for competitors who ran the 400m in less than 50 seconds vs. those than ran 400m in more than 50 seconds?
 
 
@@ -93,6 +113,14 @@ rbind(decathlon_data  %>%
 # 1.4 Task 4 - Halloween Candy Data
 The data is in files boing-boing-candy-2015.xlxs, boing-boing-candy-2016.xlxs and boing-boing-candy-2017.xlxs. Bear in mind that this is trickier compared with tasks 1, 2 & 3.
 
+The candy data sets revolved around consumer opinion of candy bar brands.
+
+The three datasets were very dirty with various issues and inconsistencies, such as missing timestamps, gender and, also, invalid answers, such as ages of 300. 
+
+However, the cleaned and combined dataset was valuable having over 9000 rows with circa 75 obervations of customer opinion of candy bar brands.
+
+Wrangling was broken down into two R files to simplify understanding.  Many columns were superflous and removed. Some were renamed. Timestamps were converted to a simple year identification.
+read_in_candy_data.R reads in the xlsx files and attends to missing columns and getting consistent country names (significant numbers of invalid names) and timestamps (year names) and so on. Missing 2015 data for country and gender was created via a 'for loop' utilising 2016 data. That might skew any statistics but seemed a valid  way of creating viable data for analysis.
 ```{r}
 
 source(here::here("R_scripts/read_in_candy_data.R"))
@@ -100,13 +128,7 @@ source(here::here("R_scripts/read_in_candy_data.R"))
 
 ```
 
-
-## Output to show valid country data
-    2015 was populated using 2016 residence data and looping to populate
-    the larger data set. Tried cbind but it didn't like the row differentials.
-
-
-
+This second call in the wrangling process drops unwanted columns and writes the merged and cleaned data to a new directoryt before reading it in below.
 
 # Now the three years of data need to be merged. 
 
@@ -115,6 +137,12 @@ source(here::here("R_scripts/read_in_candy_data.R"))
 source(here::here("R_scripts/drop_cols_and_merge.R"))
 
 ```
+
+This is the backed up and cleaned data.
+```{r}
+candy_data <- read_rds(here::here("Cleaned_data/candy_data.rds"))
+```
+
 
 
 ```{r}
@@ -127,6 +155,7 @@ glimpse(candy_data)
 
 ## 1. What is the total number of candy ratings given across the three years. (number of candy ratings, not number of raters. Don’t count missing values)
 
+This figure was obtained by pivoting and then simply summarising the ratings
 ```{r}
 candy_long <- candy_data  %>%
     pivot_longer(cols=6:80, values_drop_na = TRUE) 
@@ -138,6 +167,8 @@ candy_long <- candy_data  %>%
 
 
 ## 2. What was the average age of people who are going out trick or treating and the average age of people not going trick or treating?
+
+As there were many responses that skewed the data, by a few years, it was decided to restrict the age range to provide this answer.
 
 ```{r}
 
@@ -151,24 +182,20 @@ candy_data %>%
   summarise(mean = round(mean(how_old_are_you)))
 
 ```
+The responses probably shows a decline in enthusiasm for trick or treating as age increases. There may well be other factors, such as fears over security, that would amend this assumption and that in turn may relate to social environments, i.e. country or urban settings.
 
 ## 3. For each of joy, despair and meh, which candy bar received the most of these ratings?
+
+This call simply creates the pivot data.
 ```{r}
 pivot_candy <- candy_data  %>%
     pivot_longer(cols=6:80,   names_to = "candy_bar_name", 
                               values_to = "customer_satisfaction",
                               values_drop_na = TRUE)
 ```
-pivot_candy %>%
-  select(your_gender,  candy_bar_name, customer_satisfaction)  %>%
-  filter(!is.na(your_gender))  %>%
-  group_by(your_gender,candy_bar_name) %>%
-  summarise( sum = sum(customer_satisfaction))  %>%
-  arrange(your_gender, desc(sum))  %>%
-  slice_max(sum, n = 1)
+
 
 ```{r}
-
 
 pivot_candy %>% 
       group_by(customer_satisfaction,candy_bar_name)  %>%
@@ -180,7 +207,19 @@ pivot_candy %>%
 
      
 ```
+Gum is generally bland and so it is not hugely surprising that gum from baseball cards - probably bought for the baseball cards as opposed to the gum - should be unpopular. 
 
+Ambivalence to lollipops, is perhaps surprising as other surveys, such as reported on by Newsweek https://www.newsweek.com/why-kids-pick-some-treats-over-others-73667 suggests that young children tend to go for high sugar content and items not usually available in vending machines.
+
+KitKats are universally popular over a large age range and most global cultures - and so it is not hugely surprising that they are popuplar in the survey.
+
+https://www.referralcandy.com/blog/kit-kat-marketing-strategy/  suggests that:
+
+Recap: How did Kit Kat achieve such popularity?
+Consistent branding with a strong tagline
+Innovative flavors keep people talking about the product
+‘Moment Marketing’ helps them connect with fans and acknowledge them
+Collaborations with other brands helps to bring in excitement about Kit Kats
 
 ## 4 How many people rated Starburst as despair?
 
@@ -192,6 +231,7 @@ pivot_candy %>%
       select(candy_bar_name, customer_satisfaction) %>%
       count() 
 ```
+This fairly high number of negative reactions to Starburst is, perhaps, surprising as it is a popular brand that has been around since the 1960's. No insights can be offered to this response.
 
 # For the next three questions, count despair as -1, joy as +1 and meh as 0.
 
@@ -220,6 +260,8 @@ pivot_candy %>%
   arrange(your_gender, desc(sum))  %>%
   slice_max(sum, n = 1)
 ```
+As above, KitKat, due to flavour, balance and marketing is universally popular.
+
 
 # 7 What was the most popular candy bar in each year?
 
@@ -232,7 +274,7 @@ pivot_candy %>%
   arrange(timestamp, desc(sum))  %>%
   slice_max(sum, n = 1)
 ```
-
+This result was surprising as the figure for reese_s_peanut_butter_cups was high - though there was more 2015 data so that would skew the sum by comparison to other years. It was also surprising that reeses_pieces were so popular in 2017. This may raise questions about whether the data collected in 2017 was made in a consistent way with previous years.  It laos possibly conflicts with previous answers where data was assesed in other ways, by gender for instance. However, this Hershey product would be expected to be popular,
 
 # 8. What was the most popular candy bar by this rating for people in US, Canada, UK and all other countries?
 
@@ -260,7 +302,7 @@ country_candy %>%
 
 
 ```
-
+By contrast to the previous question these results would be anticipated and are in line with other results obtained.
 
 # 2 Extensions
 
@@ -274,6 +316,11 @@ Read the file rwa_codebook.txt to understand how to clean this data. [Hint: you 
 # Read in the data
 ```{r}
 source(here::here("R_scripts/read_in_rwa_data.R"))
+```
+
+
+```{r}
+rwa_data <- read_rds(here::here("Cleaned_data/rwa_data.rds"))
 ```
 
 ```{r}

@@ -38,3 +38,5 @@ rwa_data$education[rwa_data$education == 1]  <- "Less than high school"
 rwa_data$education[rwa_data$education == 2]  <- "High school"
 rwa_data$education[rwa_data$education == 3]  <- "University degree"
 rwa_data$education[rwa_data$education == 4]  <- "Graduate degree"
+
+write_rds(rwa_data, here::here("Cleaned_data/rwa_data.rds"))

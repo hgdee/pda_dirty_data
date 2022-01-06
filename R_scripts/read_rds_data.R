@@ -10,3 +10,4 @@ decathlon_data$competitor <- tolower(decathlon_data$competitor)
 decathlon_data$competition <- tolower(decathlon_data$competition) 
 
 
+write_rds(decathlon_data, here::here("Cleaned_data/decathlon_data.rds"))
