@@ -509,42 +509,20 @@ candy_data %&gt;%
     pivot_longer(cols=6:80,   names_to = &quot;candy_bar_name&quot;, 
                               values_to = &quot;customer_satisfaction&quot;,
                               values_drop_na = TRUE)</code></pre>
-<pre class="r"><code># pivot_candy_group &lt;- pivot_candy %&gt;% 
-   #  select(candy_bar_name,   customer_satisfaction)  %&gt;%
-  #   group_by( customer_satisfaction) %&gt;%
- #     mutate(candy_bar_num = n()) 
-    
- #pivot_candy_group %&gt;%
-#    arrange(customer_satisfaction, candy_bar_name, candy_bar_num) %&gt;%
-#    top_n(customer_satisfaction, n=1)</code></pre>
+<p>pivot_candy %&gt;% select(your_gender, candy_bar_name, customer_satisfaction) %&gt;% filter(!is.na(your_gender)) %&gt;% group_by(your_gender,candy_bar_name) %&gt;% summarise( sum = sum(customer_satisfaction)) %&gt;% arrange(your_gender, desc(sum)) %&gt;% slice_max(sum, n = 1)</p>
 <pre class="r"><code>pivot_candy %&gt;% 
-      group_by(candy_bar_name)  %&gt;%
-      filter(customer_satisfaction == &quot;DESPAIR&quot;) %&gt;%
+      group_by(customer_satisfaction,candy_bar_name)  %&gt;%
       select(candy_bar_name,customer_satisfaction)  %&gt;%
       count() %&gt;%
-      arrange(desc(n)) %&gt;%
-      head(1)  %&gt;%
-      paste(&quot; --- Despair&quot;)</code></pre>
-<pre><code>## [1] &quot;gum_from_baseball_cards  --- Despair&quot;
-## [2] &quot;7341  --- Despair&quot;</code></pre>
-<pre class="r"><code>pivot_candy %&gt;% 
-      group_by(candy_bar_name)  %&gt;%
-      filter(customer_satisfaction == &quot;MEH&quot;) %&gt;%
-      select(candy_bar_name, customer_satisfaction)  %&gt;%
-      count() %&gt;%
-      arrange(desc(n)) %&gt;%
-      head(1) %&gt;%
-      paste(&quot; --- Meh&quot;)</code></pre>
-<pre><code>## [1] &quot;lollipops  --- Meh&quot; &quot;1570  --- Meh&quot;</code></pre>
-<pre class="r"><code>pivot_candy %&gt;% 
-      group_by(candy_bar_name)  %&gt;%
-      filter(customer_satisfaction == &quot;JOY&quot;) %&gt;%
-      select(candy_bar_name, customer_satisfaction)  %&gt;%
-      count() %&gt;%
-      arrange(desc(n)) %&gt;%
-      head(1)%&gt;%
-      paste(&quot; --- Joy&quot;)</code></pre>
-<pre><code>## [1] &quot;kit_kat  --- Joy&quot; &quot;7252  --- Joy&quot;</code></pre>
+      summarise(customer_satisfaction, n) %&gt;%
+      arrange(customer_satisfaction, desc(n)) %&gt;%
+      slice_max(n, n = 1)</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;customer_satisfaction&#39;. You can override using the `.groups` argument.</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["customer_satisfaction"],"name":[1],"type":["chr"],"align":["left"]},{"label":["candy_bar_name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["n"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"DESPAIR","2":"gum_from_baseball_cards","3":"7341"},{"1":"JOY","2":"kit_kat","3":"7252"},{"1":"MEH","2":"lollipops","3":"1570"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 </div>
 <div id="how-many-people-rated-starburst-as-despair" class="section level2" number="5.4">
 <h2><span class="header-section-number">5.4</span> 4 How many people rated Starburst as despair?</h2>
