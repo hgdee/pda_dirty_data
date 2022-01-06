@@ -170,54 +170,16 @@ pivot_candy %>%
 ```{r}
 
 
-
 pivot_candy %>% 
-      group_by(customer_satisfaction, candy_bar_name)  %>%
+      group_by(customer_satisfaction,candy_bar_name)  %>%
       select(candy_bar_name,customer_satisfaction)  %>%
-      summarise(customer_satisfaction, candy_bar_name,  count = count()) %>%
-      arrange(customer_satisfaction, candy_bar_name, desc(n)) %>%
+      count() %>%
+      summarise(customer_satisfaction, n) %>%
+      arrange(customer_satisfaction, desc(n)) %>%
       slice_max(n, n = 1)
 
      
 ```
-
-```{r}
-pivot_candy %>% 
-      group_by(candy_bar_name)  %>%
-      filter(customer_satisfaction == "DESPAIR") %>%
-      select(candy_bar_name,customer_satisfaction)  %>%
-      count() %>%
-      arrange(desc(n)) %>%
-      head(1)  %>%
-      paste(" --- Despair")
-```
-
-```{r}
-pivot_candy %>% 
-      group_by(candy_bar_name)  %>%
-      filter(customer_satisfaction == "MEH") %>%
-      select(candy_bar_name, customer_satisfaction)  %>%
-      count() %>%
-      arrange(desc(n)) %>%
-      head(1) %>%
-      paste(" --- Meh")
-```
-
-
-```{r}
-
-pivot_candy %>% 
-      group_by(candy_bar_name)  %>%
-      filter(customer_satisfaction == "JOY") %>%
-      select(candy_bar_name, customer_satisfaction)  %>%
-      count() %>%
-      arrange(desc(n)) %>%
-      head(1)%>%
-      paste(" --- Joy")
-
-
-```
-
 
 
 ## 4 How many people rated Starburst as despair?
