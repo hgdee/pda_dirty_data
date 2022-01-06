@@ -37,7 +37,7 @@ The initial steps of cleaning were to turn rownames into a column called competi
 The analysis code is below but overall my conclusions are, unsurprisingly, the same competitors were at the top of both competitions and that results were better in the olympic games.
 
 
-# This file calls in the data and does the wrangling.
+This file calls in the data and does the wrangling.
 ```{r}
 source(here::here("R_scripts/read_rds_data.R"))
 ```
@@ -74,19 +74,13 @@ decathlon_data %>%
  
 ## 4 What was the shot-put scores for the top three competitors in each competition?
 ```{r}
-rbind(decathlon_data %>% 
-  filter(competition == "olympicg") %>%
+decathlon_data %>% 
+  group_by(competition) %>%
   select(competition,competitor,shot_put) %>%
-  group_by(competition, competitor) %>%
-  arrange(desc(shot_put)) %>%
-  head(3), 
-  decathlon_data %>% 
-  filter(competition == "decastar") %>%
-  select(competition,competitor,shot_put) %>%
-  group_by(competition, competitor) %>%
-  arrange(desc(shot_put)) %>%
-  head(3))
-
+  summarise(competitor, shot_put) %>%
+  arrange(desc(shot_put))  %>%
+  slice_max(shot_put, n = 3)
+  
 ```
   
 The usual suspects dominate.
@@ -274,7 +268,7 @@ As above, KitKat, due to flavour, balance and marketing is universally popular.
   arrange(timestamp, desc(sum))  %>%
   slice_max(sum, n = 1)
 ```
-This result was surprising as the figure for reese_s_peanut_butter_cups was high - though there was more 2015 data so that would skew the sum by comparison to other years. It was also surprising that reeses_pieces were so popular in 2017. This may raise questions about whether the data collected in 2017 was made in a consistent way with previous years.  It laos possibly conflicts with previous answers where data was assesed in other ways, by gender for instance. However, this Hershey product would be expected to be popular,
+This result was surprising as the figure for reese_s_peanut_butter_cups was high - though there was more 2015 data so that would skew the sum by comparison to other years. It was also surprising that reeses_pieces were so popular in 2017. This may raise questions about whether the data collected in 2017 was made in a consistent way with previous years.  It also possibly conflicts with previous answers where data was assesed in other ways, by gender for instance. However, this Hershey product would be expected to be popular,
 
 # 8. What was the most popular candy bar by this rating for people in US, Canada, UK and all other countries?
 
@@ -312,8 +306,29 @@ By contrast to the previous question these results would be anticipated and are 
 You’ll need to calculate people’s overall RWA score. This is found from the mean of questions 3 to 22. Questions 1 and 2 are warm up questions. Note that the following questions are reverse scored: 4, 6, 8, 9, 11, 13, 15, 18, 20, 21.
 Read the file rwa_codebook.txt to understand how to clean this data. [Hint: you may want to recode some of the variables to give their values meaning].
 
+In psychology, the right-wing authoritarian (RWA) is a personality type that describes somebody who is naturally submissive to their authority figures, acts aggressively in the name of said authorities, and is conformist in thought and behavior.[1] The prevalence of this personality type in a population varies from culture to culture, as a person's upbringing and education play a strong role in determining whether somebody develops this sort of personality.  https://en.wikipedia.org/wiki/Right-wing_authoritarianism
 
-# Read in the data
+The data set was relatively clean and the wrangling below was mostly to assign variables with text to make understanding easier, as per the hint above.
+
+Reverse scoring was achieved using the psych package and the reverse.code function to read a 'key' list indicating which questions were reverse scored. This package is assumed to be valid and the data seemed to be in line with expectations and, therefore, the data is relied upon with confidence.
+
+It is not clear which country the data was gathered in and as RWA scores seem to vary significantly by country. It is assumed to be US. The data below is from the wiki link above.
+
+Prevalence of RWA personality among adults
+data from Morning Consult[12]
+Low RWA	High RWA
+US	13.4%	25.6%
+UK	13.6%	10.4%
+Germany	17.4%	6.7%
+France	10.2%	10.7%
+Spain	17.9%	9.2%
+Italy	17.9%	12.9%
+Australia	17.1%	12.9%
+Canada	21.3%	13.4%
+
+
+
+# Wrangle the data
 ```{r}
 source(here::here("R_scripts/read_in_rwa_data.R"))
 ```
@@ -343,6 +358,7 @@ rwa_data %>%
   summarise( mean(rwa_score)) 
 
 ```
+These results appear to be in line with perceptions about authoritarianism. It may be anticipated that 'other' gender identifications would, due to recent social change that has been contentious, be orientated against right wing conservative authoritarianism. However, there seems to be no reason to expect that female rwa scores would be significantly lower than male scores as the driving RWA psychological factors are authoritarism, traditionalism and and conservatism - and these are not specfic to gender. It may be assumed that women seeking equality would orientate, generally, against traditionalism and this may be a factor.
 
 ##  2. What’s the average RWA score for left handed people vs. right handed people.
 
@@ -353,6 +369,9 @@ rwa_data %>%
   group_by(hand) %>%
   summarise( mean(rwa_score)) 
 ```
+These results are effecively anticipated to be the same. There would seem to be no reason to expect ambidextrous people to be more orientated to RWA than left or right handers, but this may, some would argue, point to genetic factors that may lie behind RWA orientation. However, conversely,  scores measured by age, for instance, would seem to indicate cultural issues are more significant and outweigh, or mask, genetic factors.
+
+
 ## 3. What’s the average family size for each type of childhood?
 
 ```{r}
@@ -363,6 +382,7 @@ rwa_data %>%
   group_by(urban) %>%
   summarise( round(mean(familysize)))
 ```
+The results would seem to be in line with expectations as traditional rural areas would incline to larger families. Costs would be a driving factor, it is assumed, in urban areas. However, there is no marked difference across the family backgrounds and so inferences are offered with caution.
 
 ## 4  What’s the average time to take the test for each education level?
 ```{r}
@@ -370,9 +390,13 @@ rwa_data %>%
   select(education, testelapse) %>%
   filter(!education == 0) %>%
   group_by(education) %>%
-  summarise( round(mean(testelapse)))
+  summarise( time_taken = round(mean(testelapse)))
 
 ```
+These results are possibly what would be expected - that those with the highest education would respond quickly due to ability and that those people who are not educationally developed would respond quickly because they did not think about their answers so much. 
+
+It would seem surprising that the time differential between graduate and university educated respondents is so significant. No explanation or hypthosis can be offered.
+
 ## 5. Create a plot of results of question 4.
 
 ```{r}
@@ -401,15 +425,25 @@ rwa_data %>%
   summarise(avg_rwa_score =round(mean(rwa_score)))
 
 ```
+These results would suggest that age may be a factor in RWA scores as there is a steady decline. This would again suggest cultural and social factors are key to RWA scores, though genetic factors, as suggested by gender results above may indicate some basis for assuming that genetics are a factor.
+
+
 
 # 2.2 Task 6 - Dog owners survey
 The data is available in the file dog_survey.csv It is the results of a survey filled in by dog owners about their dogs.
 
-# Read in the data
+The data had a number of difficult problems such as more than one dog on each line, currency figures merged with numbers, character datatypes for numbers and so on. Some problems had to be fixed by going to specific dataframe positions instead of programmatic functions.  Consistent field values were enforced and empty or invalid columns were dropped.
+
+# Wrangle the data
 ```{r}
 source(here::here("R_scripts/read_in_dog_survey.R"))
 
 ```
+
+```{r}
+dog_survey <- read_rds(here::here("Cleaned_data/dog_survey.rds"))
+```
+
 
 
 ```{r}
@@ -426,7 +460,7 @@ dog_survey %>%
   summarise(valid_email_addresses = sum(n()))
   
 ```
-
+As there were 291 rows in the data that means they probably enforce this data quality rule. Its not clear why and its not clear if that indicates data gathering and question criteria that may skew the data.
 
 ## 2. What’s the average amount spent on dog food for each dog size.
 
@@ -440,6 +474,7 @@ dog_sums <- dog_survey %>%
 dog_sums %>% 
   summarise(mean(amount_spent_on_dog_food))
 ```
+Its not clear why XS would require more money than XL but as there is no significant difference across the results it is, perhaps, an anomaly.
 
 ## 3. For owners whose surname starts with a letter in the second half of the alphabet (N onwards) what is the average age of their dog?
 
@@ -463,6 +498,7 @@ dog_sums %>%
 
 
 ```
+This would seem to be expected as there is no apparent reason why dog lives would vary by age.
 
 ## 5. Create a plot of results of question 4.
 

@@ -293,25 +293,31 @@ library(testthat)</code></pre>
 <p>1 MVP 1.1 Task 1 - Decathlon Data This data is contained in the .rds file decathlon.rds. You’ll need to use read_rds() from readr to open it.</p>
 <div id="call-r-file-to-process-the-rds-file." class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Call R file to process the rds file.</h1>
+</div>
+<div id="outline-of-the-decathlon-data-and-analysis" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Outline of the decathlon data and analysis</h1>
+<p>The decathlon data is a small dataset of the decastar and olympic decathlon competitions. It is not clear to me which year, and dates, the data was derived from.</p>
+<p>I have made no significant assumptions about the data and have no reason to doubt the accuracy of the data. The data seems to be generally clean and viable.</p>
+<p>The initial steps of cleaning were to turn rownames into a column called competitor, which will make analysis easier. I relied on janitor’s clean_names to amend the case and column names otherwise.</p>
+<p>The analysis code is below but overall my conclusions are, unsurprisingly, the same competitors were at the top of both competitions and that results were better in the olympic games.</p>
+<p>This file calls in the data and does the wrangling.</p>
 <pre class="r"><code>source(here::here(&quot;R_scripts/read_rds_data.R&quot;))</code></pre>
-<pre class="r"><code>decathlon_data  </code></pre>
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["competitor"],"name":[1],"type":["chr"],"align":["left"]},{"label":["x100m"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["long_jump"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["shot_put"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["high_jump"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["x400m"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["x110m_hurdle"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["discus"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["pole_vault"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["javeline"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["x1500m"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["rank"],"name":[12],"type":["int"],"align":["right"]},{"label":["points"],"name":[13],"type":["int"],"align":["right"]},{"label":["competition"],"name":[14],"type":["chr"],"align":["left"]}],"data":[{"1":"sebrle","2":"11.04","3":"7.58","4":"14.83","5":"2.07","6":"49.81","7":"14.69","8":"43.75","9":"5.02","10":"63.19","11":"291.70","12":"1","13":"8217","14":"decastar"},{"1":"clay","2":"10.76","3":"7.40","4":"14.26","5":"1.86","6":"49.37","7":"14.05","8":"50.72","9":"4.92","10":"60.15","11":"301.50","12":"2","13":"8122","14":"decastar"},{"1":"karpov","2":"11.02","3":"7.30","4":"14.77","5":"2.04","6":"48.37","7":"14.09","8":"48.95","9":"4.92","10":"50.31","11":"300.20","12":"3","13":"8099","14":"decastar"},{"1":"bernard","2":"11.02","3":"7.23","4":"14.25","5":"1.92","6":"48.93","7":"14.99","8":"40.87","9":"5.32","10":"62.77","11":"280.10","12":"4","13":"8067","14":"decastar"},{"1":"yurkov","2":"11.34","3":"7.09","4":"15.19","5":"2.10","6":"50.42","7":"15.31","8":"46.26","9":"4.72","10":"63.44","11":"276.40","12":"5","13":"8036","14":"decastar"},{"1":"warners","2":"11.11","3":"7.60","4":"14.31","5":"1.98","6":"48.68","7":"14.23","8":"41.10","9":"4.92","10":"51.77","11":"278.10","12":"6","13":"8030","14":"decastar"},{"1":"zsivoczky","2":"11.13","3":"7.30","4":"13.48","5":"2.01","6":"48.62","7":"14.17","8":"45.67","9":"4.42","10":"55.37","11":"268.00","12":"7","13":"8004","14":"decastar"},{"1":"mcmullen","2":"10.83","3":"7.31","4":"13.76","5":"2.13","6":"49.91","7":"14.38","8":"44.41","9":"4.42","10":"56.37","11":"285.10","12":"8","13":"7995","14":"decastar"},{"1":"martineau","2":"11.64","3":"6.81","4":"14.57","5":"1.95","6":"50.14","7":"14.93","8":"47.60","9":"4.92","10":"52.33","11":"262.10","12":"9","13":"7802","14":"decastar"},{"1":"hernu","2":"11.37","3":"7.56","4":"14.41","5":"1.86","6":"51.10","7":"15.06","8":"44.99","9":"4.82","10":"57.19","11":"285.10","12":"10","13":"7733","14":"decastar"},{"1":"barras","2":"11.33","3":"6.97","4":"14.09","5":"1.95","6":"49.48","7":"14.48","8":"42.10","9":"4.72","10":"55.40","11":"282.00","12":"11","13":"7708","14":"decastar"},{"1":"nool","2":"11.33","3":"7.27","4":"12.68","5":"1.98","6":"49.20","7":"15.29","8":"37.92","9":"4.62","10":"57.44","11":"266.60","12":"12","13":"7651","14":"decastar"},{"1":"bourguignon","2":"11.36","3":"6.80","4":"13.46","5":"1.86","6":"51.16","7":"15.67","8":"40.49","9":"5.02","10":"54.68","11":"291.70","12":"13","13":"7313","14":"decastar"},{"1":"sebrle","2":"10.85","3":"7.84","4":"16.36","5":"2.12","6":"48.36","7":"14.05","8":"48.72","9":"5.00","10":"70.52","11":"280.01","12":"1","13":"8893","14":"olympicg"},{"1":"clay","2":"10.44","3":"7.96","4":"15.23","5":"2.06","6":"49.19","7":"14.13","8":"50.11","9":"4.90","10":"69.71","11":"282.00","12":"2","13":"8820","14":"olympicg"},{"1":"karpov","2":"10.50","3":"7.81","4":"15.93","5":"2.09","6":"46.81","7":"13.97","8":"51.65","9":"4.60","10":"55.54","11":"278.11","12":"3","13":"8725","14":"olympicg"},{"1":"macey","2":"10.89","3":"7.47","4":"15.73","5":"2.15","6":"48.97","7":"14.56","8":"48.34","9":"4.40","10":"58.46","11":"265.42","12":"4","13":"8414","14":"olympicg"},{"1":"warners","2":"10.62","3":"7.74","4":"14.48","5":"1.97","6":"47.97","7":"14.01","8":"43.73","9":"4.90","10":"55.39","11":"278.05","12":"5","13":"8343","14":"olympicg"},{"1":"zsivoczky","2":"10.91","3":"7.14","4":"15.31","5":"2.12","6":"49.40","7":"14.95","8":"45.62","9":"4.70","10":"63.45","11":"269.54","12":"6","13":"8287","14":"olympicg"},{"1":"hernu","2":"10.97","3":"7.19","4":"14.65","5":"2.03","6":"48.73","7":"14.25","8":"44.72","9":"4.80","10":"57.76","11":"264.35","12":"7","13":"8237","14":"olympicg"},{"1":"nool","2":"10.80","3":"7.53","4":"14.26","5":"1.88","6":"48.81","7":"14.80","8":"42.05","9":"5.40","10":"61.33","11":"276.33","12":"8","13":"8235","14":"olympicg"},{"1":"bernard","2":"10.69","3":"7.48","4":"14.80","5":"2.12","6":"49.13","7":"14.17","8":"44.75","9":"4.40","10":"55.27","11":"276.31","12":"9","13":"8225","14":"olympicg"},{"1":"schwarzl","2":"10.98","3":"7.49","4":"14.01","5":"1.94","6":"49.76","7":"14.25","8":"42.43","9":"5.10","10":"56.32","11":"273.56","12":"10","13":"8102","14":"olympicg"},{"1":"pogorelov","2":"10.95","3":"7.31","4":"15.10","5":"2.06","6":"50.79","7":"14.21","8":"44.60","9":"5.00","10":"53.45","11":"287.63","12":"11","13":"8084","14":"olympicg"},{"1":"schoenbeck","2":"10.90","3":"7.30","4":"14.77","5":"1.88","6":"50.30","7":"14.34","8":"44.41","9":"5.00","10":"60.89","11":"278.82","12":"12","13":"8077","14":"olympicg"},{"1":"barras","2":"11.14","3":"6.99","4":"14.91","5":"1.94","6":"49.41","7":"14.37","8":"44.83","9":"4.60","10":"64.55","11":"267.09","12":"13","13":"8067","14":"olympicg"},{"1":"smith","2":"10.85","3":"6.81","4":"15.24","5":"1.91","6":"49.27","7":"14.01","8":"49.02","9":"4.20","10":"61.52","11":"272.74","12":"14","13":"8023","14":"olympicg"},{"1":"averyanov","2":"10.55","3":"7.34","4":"14.44","5":"1.94","6":"49.72","7":"14.39","8":"39.88","9":"4.80","10":"54.51","11":"271.02","12":"15","13":"8021","14":"olympicg"},{"1":"ojaniemi","2":"10.68","3":"7.50","4":"14.97","5":"1.94","6":"49.12","7":"15.01","8":"40.35","9":"4.60","10":"59.26","11":"275.71","12":"16","13":"8006","14":"olympicg"},{"1":"smirnov","2":"10.89","3":"7.07","4":"13.88","5":"1.94","6":"49.11","7":"14.77","8":"42.47","9":"4.70","10":"60.88","11":"263.31","12":"17","13":"7993","14":"olympicg"},{"1":"qi","2":"11.06","3":"7.34","4":"13.55","5":"1.97","6":"49.65","7":"14.78","8":"45.13","9":"4.50","10":"60.79","11":"272.63","12":"18","13":"7934","14":"olympicg"},{"1":"drews","2":"10.87","3":"7.38","4":"13.07","5":"1.88","6":"48.51","7":"14.01","8":"40.11","9":"5.00","10":"51.53","11":"274.21","12":"19","13":"7926","14":"olympicg"},{"1":"parkhomenko","2":"11.14","3":"6.61","4":"15.69","5":"2.03","6":"51.04","7":"14.88","8":"41.90","9":"4.80","10":"65.82","11":"277.94","12":"20","13":"7918","14":"olympicg"},{"1":"terek","2":"10.92","3":"6.94","4":"15.15","5":"1.94","6":"49.56","7":"15.12","8":"45.62","9":"5.30","10":"50.62","11":"290.36","12":"21","13":"7893","14":"olympicg"},{"1":"gomez","2":"11.08","3":"7.26","4":"14.57","5":"1.85","6":"48.61","7":"14.41","8":"40.95","9":"4.40","10":"60.71","11":"269.70","12":"22","13":"7865","14":"olympicg"},{"1":"turi","2":"11.08","3":"6.91","4":"13.62","5":"2.03","6":"51.67","7":"14.26","8":"39.83","9":"4.80","10":"59.34","11":"290.01","12":"23","13":"7708","14":"olympicg"},{"1":"lorenzo","2":"11.10","3":"7.03","4":"13.22","5":"1.85","6":"49.34","7":"15.38","8":"40.22","9":"4.50","10":"58.36","11":"263.08","12":"24","13":"7592","14":"olympicg"},{"1":"karlivans","2":"11.33","3":"7.26","4":"13.30","5":"1.97","6":"50.54","7":"14.98","8":"43.34","9":"4.50","10":"52.92","11":"278.67","12":"25","13":"7583","14":"olympicg"},{"1":"korkizoglou","2":"10.86","3":"7.07","4":"14.81","5":"1.94","6":"51.16","7":"14.96","8":"46.07","9":"4.70","10":"53.05","11":"317.00","12":"26","13":"7573","14":"olympicg"},{"1":"uldal","2":"11.23","3":"6.99","4":"13.53","5":"1.85","6":"50.95","7":"15.09","8":"43.01","9":"4.50","10":"60.00","11":"281.70","12":"27","13":"7495","14":"olympicg"},{"1":"casarsa","2":"11.36","3":"6.68","4":"14.92","5":"1.94","6":"53.20","7":"15.39","8":"48.66","9":"4.40","10":"58.62","11":"296.12","12":"28","13":"7404","14":"olympicg"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
+<pre class="r"><code>decathlon_data  &lt;- read_rds(here::here(&quot;Cleaned_data/decathlon_data.rds&quot;))</code></pre>
 </div>
-</div>
-<div id="analysis-questions" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> 1.1.2 Analysis questions</h1>
+<div id="analysis-questions" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> 1.1.2 Analysis questions</h1>
 <p>## 1 Who had the longest long jump seen in the data?</p>
 <pre class="r"><code>decathlon_data %&gt;% 
-  filter(long_jump == max(long_jump))</code></pre>
+  filter(long_jump == max(long_jump)) %&gt;%
+  select(competitor, long_jump, competition)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["competitor"],"name":[1],"type":["chr"],"align":["left"]},{"label":["x100m"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["long_jump"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["shot_put"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["high_jump"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["x400m"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["x110m_hurdle"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["discus"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["pole_vault"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["javeline"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["x1500m"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["rank"],"name":[12],"type":["int"],"align":["right"]},{"label":["points"],"name":[13],"type":["int"],"align":["right"]},{"label":["competition"],"name":[14],"type":["chr"],"align":["left"]}],"data":[{"1":"clay","2":"10.44","3":"7.96","4":"15.23","5":"2.06","6":"49.19","7":"14.13","8":"50.11","9":"4.9","10":"69.71","11":"282","12":"2","13":"8820","14":"olympicg"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["competitor"],"name":[1],"type":["chr"],"align":["left"]},{"label":["long_jump"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["competition"],"name":[3],"type":["chr"],"align":["left"]}],"data":[{"1":"clay","2":"7.96","3":"olympicg"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<p>## 2 What was the average 100m time in each competition?</p>
+<p>The current olympic record is 8.95 so this result is way short of that record, but is higher than the olympic decathlon record of 7.72 - held by Sebrle.</p>
+<div id="what-was-the-average-100m-time-in-each-competition" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> 2 What was the average 100m time in each competition?</h2>
 <pre class="r"><code>decathlon_data %&gt;% 
   group_by(competition) %&gt;%
    summarise(mean(x100m))</code></pre>
@@ -320,8 +326,10 @@ library(testthat)</code></pre>
 {"columns":[{"label":["competition"],"name":[1],"type":["chr"],"align":["left"]},{"label":["mean(x100m)"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"decastar","2":"11.17538"},{"1":"olympicg","2":"10.91571"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<div id="who-had-the-highest-total-points-across-both-competitions" class="section level2" number="2.1">
-<h2><span class="header-section-number">2.1</span> 3 Who had the highest total points across both competitions?</h2>
+<p>As expected, the olympic time is better than the decastar as it is more prestigious and comeptitors would build training to peak at the games.</p>
+</div>
+<div id="who-had-the-highest-total-points-across-both-competitions" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> 3 Who had the highest total points across both competitions?</h2>
 <pre class="r"><code>decathlon_data %&gt;% 
   filter(points== max(points))</code></pre>
 <div data-pagedtable="false">
@@ -329,27 +337,26 @@ library(testthat)</code></pre>
 {"columns":[{"label":["competitor"],"name":[1],"type":["chr"],"align":["left"]},{"label":["x100m"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["long_jump"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["shot_put"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["high_jump"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["x400m"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["x110m_hurdle"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["discus"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["pole_vault"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["javeline"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["x1500m"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["rank"],"name":[12],"type":["int"],"align":["right"]},{"label":["points"],"name":[13],"type":["int"],"align":["right"]},{"label":["competition"],"name":[14],"type":["chr"],"align":["left"]}],"data":[{"1":"sebrle","2":"10.85","3":"7.84","4":"16.36","5":"2.12","6":"48.36","7":"14.05","8":"48.72","9":"5","10":"70.52","11":"280.01","12":"1","13":"8893","14":"olympicg"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<p>## 4 What was the shot-put scores for the top three competitors in each competition?</p>
-<pre class="r"><code>rbind(decathlon_data %&gt;% 
-  filter(competition == &quot;olympicg&quot;) %&gt;%
+<p>Sebrle got 8893 points and the olympic record is Kevin Mayer 9126 pts (2018)</p>
+</div>
+<div id="what-was-the-shot-put-scores-for-the-top-three-competitors-in-each-competition" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> 4 What was the shot-put scores for the top three competitors in each competition?</h2>
+<pre class="r"><code>decathlon_data %&gt;% 
+  group_by(competition) %&gt;%
   select(competition,competitor,shot_put) %&gt;%
-  group_by(competition, competitor) %&gt;%
-  arrange(desc(shot_put)) %&gt;%
-  head(3), 
-  decathlon_data %&gt;% 
-  filter(competition == &quot;decastar&quot;) %&gt;%
-  select(competition,competitor,shot_put) %&gt;%
-  group_by(competition, competitor) %&gt;%
-  arrange(desc(shot_put)) %&gt;%
-  head(3))</code></pre>
+  summarise(competitor, shot_put) %&gt;%
+  arrange(desc(shot_put))  %&gt;%
+  slice_max(shot_put, n = 3)</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;competition&#39;. You can override using the `.groups` argument.</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["competition"],"name":[1],"type":["chr"],"align":["left"]},{"label":["competitor"],"name":[2],"type":["chr"],"align":["left"]},{"label":["shot_put"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"olympicg","2":"sebrle","3":"16.36"},{"1":"olympicg","2":"karpov","3":"15.93"},{"1":"olympicg","2":"macey","3":"15.73"},{"1":"decastar","2":"yurkov","3":"15.19"},{"1":"decastar","2":"sebrle","3":"14.83"},{"1":"decastar","2":"karpov","3":"14.77"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["competition"],"name":[1],"type":["chr"],"align":["left"]},{"label":["competitor"],"name":[2],"type":["chr"],"align":["left"]},{"label":["shot_put"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"decastar","2":"yurkov","3":"15.19"},{"1":"decastar","2":"sebrle","3":"14.83"},{"1":"decastar","2":"karpov","3":"14.77"},{"1":"olympicg","2":"sebrle","3":"16.36"},{"1":"olympicg","2":"karpov","3":"15.93"},{"1":"olympicg","2":"macey","3":"15.73"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+<p>The usual suspects dominate.</p>
 </div>
-<div id="what-was-the-average-points-for-competitors-who-ran-the-400m-in-less-than-50-seconds-vs.-those-than-ran-400m-in-more-than-50-seconds" class="section level2" number="2.2">
-<h2><span class="header-section-number">2.2</span> 5 What was the average points for competitors who ran the 400m in less than 50 seconds vs. those than ran 400m in more than 50 seconds?</h2>
+<div id="what-was-the-average-points-for-competitors-who-ran-the-400m-in-less-than-50-seconds-vs.-those-than-ran-400m-in-more-than-50-seconds" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> 5 What was the average points for competitors who ran the 400m in less than 50 seconds vs. those than ran 400m in more than 50 seconds?</h2>
 <pre class="r"><code>rbind(decathlon_data  %&gt;%
     filter(x400m &lt; 50) %&gt;%
     summarise(round(mean(points),2 )) %&gt;%
@@ -366,9 +373,13 @@ library(testthat)</code></pre>
 ## [2,] &quot;7727.17  average points where 400m &gt;= 50 secs&quot;</code></pre>
 </div>
 </div>
-<div id="task-4---halloween-candy-data" class="section level1" number="3">
-<h1><span class="header-section-number">3</span> 1.4 Task 4 - Halloween Candy Data</h1>
+<div id="task-4---halloween-candy-data" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> 1.4 Task 4 - Halloween Candy Data</h1>
 <p>The data is in files boing-boing-candy-2015.xlxs, boing-boing-candy-2016.xlxs and boing-boing-candy-2017.xlxs. Bear in mind that this is trickier compared with tasks 1, 2 &amp; 3.</p>
+<p>The candy data sets revolved around consumer opinion of candy bar brands.</p>
+<p>The three datasets were very dirty with various issues and inconsistencies, such as missing timestamps, gender and, also, invalid answers, such as ages of 300.</p>
+<p>However, the cleaned and combined dataset was valuable having over 9000 rows with circa 75 obervations of customer opinion of candy bar brands.</p>
+<p>Wrangling was broken down into two R files to simplify understanding. Many columns were superflous and removed. Some were renamed. Timestamps were converted to a simple year identification. read_in_candy_data.R reads in the xlsx files and attends to missing columns and getting consistent country names (significant numbers of invalid names) and timestamps (year names) and so on. Missing 2015 data for country and gender was created via a ‘for loop’ utilising 2016 data. That might skew any statistics but seemed a valid way of creating viable data for analysis.</p>
 <pre class="r"><code>source(here::here(&quot;R_scripts/read_in_candy_data.R&quot;))</code></pre>
 <pre><code>## Warning: Unknown or uninitialised column: `country`.</code></pre>
 <pre><code>## Warning: Unknown or uninitialised column: `your_gender`.</code></pre>
@@ -378,17 +389,15 @@ library(testthat)</code></pre>
 
 ## Warning in eval(ei, envir): NAs introduced by coercion</code></pre>
 <pre><code>## Warning in eval(ei, envir): NAs introduced by coercion to integer range</code></pre>
-<div id="output-to-show-valid-country-data" class="section level2" number="3.1">
-<h2><span class="header-section-number">3.1</span> Output to show valid country data</h2>
-<pre><code>2015 was populated using 2016 residence data and looping to populate
-the larger data set. Tried cbind but it didn&#39;t like the row differentials.</code></pre>
+<p>This second call in the wrangling process drops unwanted columns and writes the merged and cleaned data to a new directoryt before reading it in below.</p>
 </div>
-</div>
-<div id="now-the-three-years-of-data-need-to-be-merged." class="section level1" number="4">
-<h1><span class="header-section-number">4</span> Now the three years of data need to be merged.</h1>
+<div id="now-the-three-years-of-data-need-to-be-merged." class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Now the three years of data need to be merged.</h1>
 <pre class="r"><code>source(here::here(&quot;R_scripts/drop_cols_and_merge.R&quot;))</code></pre>
 <pre><code>## Joining, by = c(&quot;timestamp&quot;, &quot;are_you_going_actually_going_trick_or_treating_yourself&quot;, &quot;your_gender&quot;, &quot;how_old_are_you&quot;, &quot;country&quot;, &quot;x100_grand_bar&quot;, &quot;black_jacks&quot;, &quot;bonkers_the_candy&quot;, &quot;boxo_raisins&quot;, &quot;butterfinger&quot;, &quot;cadbury_creme_eggs&quot;, &quot;candy_corn&quot;, &quot;caramellos&quot;, &quot;chick_o_sticks_we_don_t_know_what_that_is&quot;, &quot;chiclets&quot;, &quot;coffee_crisp&quot;, &quot;goo_goo_clusters&quot;, &quot;good_n_plenty&quot;, &quot;gum_from_baseball_cards&quot;, &quot;gummy_bears_straight_up&quot;, &quot;hard_candy&quot;, &quot;healthy_fruit&quot;, &quot;hersheys_dark_chocolate&quot;, &quot;hershey_s_milk_chocolate&quot;, &quot;hersheys_kisses&quot;, &quot;jolly_rancher_bad_flavor&quot;, &quot;jolly_ranchers_good_flavor&quot;, &quot;junior_mints&quot;, &quot;senior_mints&quot;, &quot;kinder_happy_hippo&quot;, &quot;kit_kat&quot;, &quot;laffy_taffy&quot;, &quot;lemon_heads&quot;, &quot;licorice_not_black&quot;, &quot;licorice_yes_black&quot;, &quot;lindt_truffle&quot;, &quot;lollipops&quot;, &quot;mars&quot;, &quot;mary_janes&quot;, &quot;maynards&quot;, &quot;milk_duds&quot;, &quot;milky_way&quot;, &quot;regular_m_ms&quot;, &quot;peanut_m_m_s&quot;, &quot;blue_m_ms&quot;, &quot;red_m_ms&quot;, &quot;third_party_m_ms&quot;, &quot;minibags_of_chips&quot;, &quot;mint_kisses&quot;, &quot;necco_wafers&quot;, &quot;nestle_crunch&quot;, &quot;nown_laters&quot;, &quot;pencils&quot;, &quot;pixy_stix&quot;, &quot;reese_s_peanut_butter_cups&quot;, &quot;reeses_pieces&quot;, &quot;reggie_jackson_bar&quot;, &quot;rolos&quot;, &quot;skittles&quot;, &quot;smarties_american&quot;, &quot;smarties_commonwealth&quot;, &quot;snickers&quot;, &quot;starburst&quot;, &quot;sweet_tarts&quot;, &quot;sweetums_a_friend_to_diabetes&quot;, &quot;tic_tacs&quot;, &quot;tolberone_something_or_other&quot;, &quot;trail_mix&quot;, &quot;twix&quot;)</code></pre>
 <pre><code>## Joining, by = c(&quot;timestamp&quot;, &quot;are_you_going_actually_going_trick_or_treating_yourself&quot;, &quot;your_gender&quot;, &quot;how_old_are_you&quot;, &quot;country&quot;, &quot;x100_grand_bar&quot;, &quot;black_jacks&quot;, &quot;butterfinger&quot;, &quot;cadbury_creme_eggs&quot;, &quot;candy_corn&quot;, &quot;caramellos&quot;, &quot;chick_o_sticks_we_don_t_know_what_that_is&quot;, &quot;chiclets&quot;, &quot;goo_goo_clusters&quot;, &quot;good_n_plenty&quot;, &quot;gum_from_baseball_cards&quot;, &quot;gummy_bears_straight_up&quot;, &quot;hard_candy&quot;, &quot;healthy_fruit&quot;, &quot;hershey_s_milk_chocolate&quot;, &quot;jolly_rancher_bad_flavor&quot;, &quot;jolly_ranchers_good_flavor&quot;, &quot;junior_mints&quot;, &quot;senior_mints&quot;, &quot;kinder_happy_hippo&quot;, &quot;kit_kat&quot;, &quot;laffy_taffy&quot;, &quot;lemon_heads&quot;, &quot;licorice_not_black&quot;, &quot;lindt_truffle&quot;, &quot;lollipops&quot;, &quot;mars&quot;, &quot;mary_janes&quot;, &quot;maynards&quot;, &quot;milk_duds&quot;, &quot;milky_way&quot;, &quot;regular_m_ms&quot;, &quot;peanut_m_m_s&quot;, &quot;minibags_of_chips&quot;, &quot;mint_kisses&quot;, &quot;necco_wafers&quot;, &quot;nestle_crunch&quot;, &quot;nown_laters&quot;, &quot;pencils&quot;, &quot;pixy_stix&quot;, &quot;reese_s_peanut_butter_cups&quot;, &quot;reggie_jackson_bar&quot;, &quot;rolos&quot;, &quot;skittles&quot;, &quot;smarties_american&quot;, &quot;smarties_commonwealth&quot;, &quot;snickers&quot;, &quot;starburst&quot;, &quot;tolberone_something_or_other&quot;, &quot;trail_mix&quot;, &quot;twix&quot;)</code></pre>
+<p>This is the backed up and cleaned data.</p>
+<pre class="r"><code>candy_data &lt;- read_rds(here::here(&quot;Cleaned_data/candy_data.rds&quot;))</code></pre>
 <pre class="r"><code>glimpse(candy_data)</code></pre>
 <pre><code>## Rows: 9,348
 ## Columns: 80
@@ -473,10 +482,11 @@ the larger data set. Tried cbind but it didn&#39;t like the row differentials.</
 ## $ sweetums                                                &lt;chr&gt; NA, NA, NA, NA~
 ## $ peanut_butter_bars                                      &lt;chr&gt; NA, NA, NA, NA~</code></pre>
 </div>
-<div id="analysis-questions-1" class="section level1" number="5">
-<h1><span class="header-section-number">5</span> 1.4.2 Analysis questions</h1>
-<div id="what-is-the-total-number-of-candy-ratings-given-across-the-three-years.-number-of-candy-ratings-not-number-of-raters.-dont-count-missing-values" class="section level2" number="5.1">
-<h2><span class="header-section-number">5.1</span> 1. What is the total number of candy ratings given across the three years. (number of candy ratings, not number of raters. Don’t count missing values)</h2>
+<div id="analysis-questions-1" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> 1.4.2 Analysis questions</h1>
+<div id="what-is-the-total-number-of-candy-ratings-given-across-the-three-years.-number-of-candy-ratings-not-number-of-raters.-dont-count-missing-values" class="section level2" number="6.1">
+<h2><span class="header-section-number">6.1</span> 1. What is the total number of candy ratings given across the three years. (number of candy ratings, not number of raters. Don’t count missing values)</h2>
+<p>This figure was obtained by pivoting and then simply summarising the ratings</p>
 <pre class="r"><code>candy_long &lt;- candy_data  %&gt;%
     pivot_longer(cols=6:80, values_drop_na = TRUE) 
 
@@ -487,8 +497,9 @@ the larger data set. Tried cbind but it didn&#39;t like the row differentials.</
   </script>
 </div>
 </div>
-<div id="what-was-the-average-age-of-people-who-are-going-out-trick-or-treating-and-the-average-age-of-people-not-going-trick-or-treating" class="section level2" number="5.2">
-<h2><span class="header-section-number">5.2</span> 2. What was the average age of people who are going out trick or treating and the average age of people not going trick or treating?</h2>
+<div id="what-was-the-average-age-of-people-who-are-going-out-trick-or-treating-and-the-average-age-of-people-not-going-trick-or-treating" class="section level2" number="6.2">
+<h2><span class="header-section-number">6.2</span> 2. What was the average age of people who are going out trick or treating and the average age of people not going trick or treating?</h2>
+<p>As there were many responses that skewed the data, by a few years, it was decided to restrict the age range to provide this answer.</p>
 <pre class="r"><code>  # as many ages are implausible (0-300) restrict the age to 5-100
 candy_data %&gt;%
   select(are_you_going_actually_going_trick_or_treating_yourself, 
@@ -502,14 +513,15 @@ candy_data %&gt;%
 {"columns":[{"label":["are_you_going_actually_going_trick_or_treating_yourself"],"name":[1],"type":["chr"],"align":["left"]},{"label":["mean"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"No","2":"39"},{"1":"Yes","2":"35"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+<p>The responses probably shows a decline in enthusiasm for trick or treating as age increases. There may well be other factors, such as fears over security, that would amend this assumption and that in turn may relate to social environments, i.e. country or urban settings.</p>
 </div>
-<div id="for-each-of-joy-despair-and-meh-which-candy-bar-received-the-most-of-these-ratings" class="section level2" number="5.3">
-<h2><span class="header-section-number">5.3</span> 3. For each of joy, despair and meh, which candy bar received the most of these ratings?</h2>
+<div id="for-each-of-joy-despair-and-meh-which-candy-bar-received-the-most-of-these-ratings" class="section level2" number="6.3">
+<h2><span class="header-section-number">6.3</span> 3. For each of joy, despair and meh, which candy bar received the most of these ratings?</h2>
+<p>This call simply creates the pivot data.</p>
 <pre class="r"><code>pivot_candy &lt;- candy_data  %&gt;%
     pivot_longer(cols=6:80,   names_to = &quot;candy_bar_name&quot;, 
                               values_to = &quot;customer_satisfaction&quot;,
                               values_drop_na = TRUE)</code></pre>
-<p>pivot_candy %&gt;% select(your_gender, candy_bar_name, customer_satisfaction) %&gt;% filter(!is.na(your_gender)) %&gt;% group_by(your_gender,candy_bar_name) %&gt;% summarise( sum = sum(customer_satisfaction)) %&gt;% arrange(your_gender, desc(sum)) %&gt;% slice_max(sum, n = 1)</p>
 <pre class="r"><code>pivot_candy %&gt;% 
       group_by(customer_satisfaction,candy_bar_name)  %&gt;%
       select(candy_bar_name,customer_satisfaction)  %&gt;%
@@ -523,9 +535,14 @@ candy_data %&gt;%
 {"columns":[{"label":["customer_satisfaction"],"name":[1],"type":["chr"],"align":["left"]},{"label":["candy_bar_name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["n"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"DESPAIR","2":"gum_from_baseball_cards","3":"7341"},{"1":"JOY","2":"kit_kat","3":"7252"},{"1":"MEH","2":"lollipops","3":"1570"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+<p>Gum is generally bland and so it is not hugely surprising that gum from baseball cards - probably bought for the baseball cards as opposed to the gum - should be unpopular.</p>
+<p>Ambivalence to lollipops, is perhaps surprising as other surveys, such as reported on by Newsweek <a href="https://www.newsweek.com/why-kids-pick-some-treats-over-others-73667" class="uri">https://www.newsweek.com/why-kids-pick-some-treats-over-others-73667</a> suggests that young children tend to go for high sugar content and items not usually available in vending machines.</p>
+<p>KitKats are universally popular over a large age range and most global cultures - and so it is not hugely surprising that they are popuplar in the survey.</p>
+<p><a href="https://www.referralcandy.com/blog/kit-kat-marketing-strategy/" class="uri">https://www.referralcandy.com/blog/kit-kat-marketing-strategy/</a> suggests that:</p>
+<p>Recap: How did Kit Kat achieve such popularity? Consistent branding with a strong tagline Innovative flavors keep people talking about the product ‘Moment Marketing’ helps them connect with fans and acknowledge them Collaborations with other brands helps to bring in excitement about Kit Kats</p>
 </div>
-<div id="how-many-people-rated-starburst-as-despair" class="section level2" number="5.4">
-<h2><span class="header-section-number">5.4</span> 4 How many people rated Starburst as despair?</h2>
+<div id="how-many-people-rated-starburst-as-despair" class="section level2" number="6.4">
+<h2><span class="header-section-number">6.4</span> 4 How many people rated Starburst as despair?</h2>
 <pre class="r"><code>pivot_candy %&gt;% 
       group_by(candy_bar_name)  %&gt;%
       filter(toupper( candy_bar_name) == &quot;STARBURST&quot; &amp; 
@@ -537,10 +554,11 @@ candy_data %&gt;%
 {"columns":[{"label":["candy_bar_name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"starburst","2":"2202"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+<p>This fairly high number of negative reactions to Starburst is, perhaps, surprising as it is a popular brand that has been around since the 1960’s. No insights can be offered to this response.</p>
 </div>
 </div>
-<div id="for-the-next-three-questions-count-despair-as--1-joy-as-1-and-meh-as-0." class="section level1" number="6">
-<h1><span class="header-section-number">6</span> For the next three questions, count despair as -1, joy as +1 and meh as 0.</h1>
+<div id="for-the-next-three-questions-count-despair-as--1-joy-as-1-and-meh-as-0." class="section level1" number="7">
+<h1><span class="header-section-number">7</span> For the next three questions, count despair as -1, joy as +1 and meh as 0.</h1>
 <pre class="r"><code>pivot_candy[pivot_candy == &quot;JOY&quot;] &lt;-     &quot;1&quot;
 pivot_candy[pivot_candy == &quot;MEH&quot;] &lt;-     &quot;0&quot;
 pivot_candy[pivot_candy == &quot;DESPAIR&quot;] &lt;- &quot;-1&quot;
@@ -550,8 +568,8 @@ pivot_candy$customer_satisfaction &lt;- as.numeric(pivot_candy$customer_satisfac
 # As &#39;other&#39; and &#39;I&#39;d ratuher not say&#39; look to be the same then combine 
 # NA&#39;s are not converted
 pivot_candy[pivot_candy == &quot;I&#39;d rather not say&quot;] &lt;- &quot;Other&quot;</code></pre>
-<div id="what-was-the-most-popular-candy-bar-by-this-rating-system-for-each-gender-in-the-dataset" class="section level2" number="6.1">
-<h2><span class="header-section-number">6.1</span> 6 (?) What was the most popular candy bar by this rating system for each gender in the dataset?</h2>
+<div id="what-was-the-most-popular-candy-bar-by-this-rating-system-for-each-gender-in-the-dataset" class="section level2" number="7.1">
+<h2><span class="header-section-number">7.1</span> 6 (?) What was the most popular candy bar by this rating system for each gender in the dataset?</h2>
 <pre class="r"><code>pivot_candy %&gt;%
   select(your_gender,  candy_bar_name, customer_satisfaction)  %&gt;%
   filter(!is.na(your_gender))  %&gt;%
@@ -565,10 +583,11 @@ pivot_candy[pivot_candy == &quot;I&#39;d rather not say&quot;] &lt;- &quot;Other
 {"columns":[{"label":["your_gender"],"name":[1],"type":["chr"],"align":["left"]},{"label":["candy_bar_name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["sum"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"Female","2":"kit_kat","3":"2182"},{"1":"Male","2":"kit_kat","3":"4181"},{"1":"Other","2":"kit_kat","3":"244"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+<p>As above, KitKat, due to flavour, balance and marketing is universally popular.</p>
 </div>
 </div>
-<div id="what-was-the-most-popular-candy-bar-in-each-year" class="section level1" number="7">
-<h1><span class="header-section-number">7</span> 7 What was the most popular candy bar in each year?</h1>
+<div id="what-was-the-most-popular-candy-bar-in-each-year" class="section level1" number="8">
+<h1><span class="header-section-number">8</span> 7 What was the most popular candy bar in each year?</h1>
 <pre class="r"><code>  pivot_candy %&gt;%
   select(timestamp,  candy_bar_name, customer_satisfaction)  %&gt;%
   group_by(timestamp,candy_bar_name) %&gt;%
@@ -581,9 +600,10 @@ pivot_candy[pivot_candy == &quot;I&#39;d rather not say&quot;] &lt;- &quot;Other
 {"columns":[{"label":["timestamp"],"name":[1],"type":["chr"],"align":["left"]},{"label":["candy_bar_name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["sum"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"2015","2":"reese_s_peanut_butter_cups","3":"4375"},{"1":"2016","2":"kit_kat","3":"920"},{"1":"2017","2":"reeses_pieces","3":"1403"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+<p>This result was surprising as the figure for reese_s_peanut_butter_cups was high - though there was more 2015 data so that would skew the sum by comparison to other years. It was also surprising that reeses_pieces were so popular in 2017. This may raise questions about whether the data collected in 2017 was made in a consistent way with previous years. It also possibly conflicts with previous answers where data was assesed in other ways, by gender for instance. However, this Hershey product would be expected to be popular,</p>
 </div>
-<div id="what-was-the-most-popular-candy-bar-by-this-rating-for-people-in-us-canada-uk-and-all-other-countries" class="section level1" number="8">
-<h1><span class="header-section-number">8</span> 8. What was the most popular candy bar by this rating for people in US, Canada, UK and all other countries?</h1>
+<div id="what-was-the-most-popular-candy-bar-by-this-rating-for-people-in-us-canada-uk-and-all-other-countries" class="section level1" number="9">
+<h1><span class="header-section-number">9</span> 8. What was the most popular candy bar by this rating for people in US, Canada, UK and all other countries?</h1>
 <pre class="r"><code>country_candy &lt;- pivot_candy %&gt;%
         mutate(country =  
           case_when(country  
@@ -605,20 +625,27 @@ pivot_candy[pivot_candy == &quot;I&#39;d rather not say&quot;] &lt;- &quot;Other
 {"columns":[{"label":["country"],"name":[1],"type":["chr"],"align":["left"]},{"label":["candy_bar_name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["sum"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"canada","2":"kit_kat","3":"623"},{"1":"other","2":"kit_kat","3":"1510"},{"1":"united kingdom","2":"kit_kat","3":"93"},{"1":"usa","2":"kit_kat","3":"4429"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+<p>By contrast to the previous question these results would be anticipated and are in line with other results obtained.</p>
 </div>
-<div id="extensions" class="section level1" number="9">
-<h1><span class="header-section-number">9</span> 2 Extensions</h1>
-<div id="the-data-is-available-in-the-file-rwa.csv.-this-dataset-comes-from-httpsopenpsychometrics.org_rawdata.-it-measures-how-people-score-on-a-measure-called-right-wing-authoritarianism-or-rwa." class="section level2" number="9.1">
-<h2><span class="header-section-number">9.1</span> The data is available in the file rwa.csv. This dataset comes from <a href="https://openpsychometrics.org/_rawdata/" class="uri">https://openpsychometrics.org/_rawdata/</a>. It measures how people score on a measure called Right Wing Authoritarianism, or RWA.</h2>
-<div id="some-cleaning-hints" class="section level3" number="9.1.1">
-<h3><span class="header-section-number">9.1.1</span> 2.1.1 Some cleaning hints</h3>
+<div id="extensions" class="section level1" number="10">
+<h1><span class="header-section-number">10</span> 2 Extensions</h1>
+<div id="the-data-is-available-in-the-file-rwa.csv.-this-dataset-comes-from-httpsopenpsychometrics.org_rawdata.-it-measures-how-people-score-on-a-measure-called-right-wing-authoritarianism-or-rwa." class="section level2" number="10.1">
+<h2><span class="header-section-number">10.1</span> The data is available in the file rwa.csv. This dataset comes from <a href="https://openpsychometrics.org/_rawdata/" class="uri">https://openpsychometrics.org/_rawdata/</a>. It measures how people score on a measure called Right Wing Authoritarianism, or RWA.</h2>
+<div id="some-cleaning-hints" class="section level3" number="10.1.1">
+<h3><span class="header-section-number">10.1.1</span> 2.1.1 Some cleaning hints</h3>
 <p>You’ll need to calculate people’s overall RWA score. This is found from the mean of questions 3 to 22. Questions 1 and 2 are warm up questions. Note that the following questions are reverse scored: 4, 6, 8, 9, 11, 13, 15, 18, 20, 21. Read the file rwa_codebook.txt to understand how to clean this data. [Hint: you may want to recode some of the variables to give their values meaning].</p>
+<p>In psychology, the right-wing authoritarian (RWA) is a personality type that describes somebody who is naturally submissive to their authority figures, acts aggressively in the name of said authorities, and is conformist in thought and behavior.[1] The prevalence of this personality type in a population varies from culture to culture, as a person’s upbringing and education play a strong role in determining whether somebody develops this sort of personality. <a href="https://en.wikipedia.org/wiki/Right-wing_authoritarianism" class="uri">https://en.wikipedia.org/wiki/Right-wing_authoritarianism</a></p>
+<p>The data set was relatively clean and the wrangling below was mostly to assign variables with text to make understanding easier, as per the hint above.</p>
+<p>Reverse scoring was achieved using the psych package and the reverse.code function to read a ‘key’ list indicating which questions were reverse scored. This package is assumed to be valid and the data seemed to be in line with expectations and, therefore, the data is relied upon with confidence.</p>
+<p>It is not clear which country the data was gathered in and as RWA scores seem to vary significantly by country. It is assumed to be US. The data below is from the wiki link above.</p>
+<p>Prevalence of RWA personality among adults data from Morning Consult[12] Low RWA High RWA US 13.4% 25.6% UK 13.6% 10.4% Germany 17.4% 6.7% France 10.2% 10.7% Spain 17.9% 9.2% Italy 17.9% 12.9% Australia 17.1% 12.9% Canada 21.3% 13.4%</p>
 </div>
 </div>
 </div>
-<div id="read-in-the-data" class="section level1" number="10">
-<h1><span class="header-section-number">10</span> Read in the data</h1>
+<div id="wrangle-the-data" class="section level1" number="11">
+<h1><span class="header-section-number">11</span> Wrangle the data</h1>
 <pre class="r"><code>source(here::here(&quot;R_scripts/read_in_rwa_data.R&quot;))</code></pre>
+<pre class="r"><code>rwa_data &lt;- read_rds(here::here(&quot;Cleaned_data/rwa_data.rds&quot;))</code></pre>
 <pre class="r"><code>glimpse(rwa_data)</code></pre>
 <pre><code>## Rows: 9,881
 ## Columns: 89
@@ -720,10 +747,10 @@ pivot_candy[pivot_candy == &quot;I&#39;d rather not say&quot;] &lt;- &quot;Other
   </script>
 </div>
 </div>
-<div id="analysis-questions-2" class="section level1" number="11">
-<h1><span class="header-section-number">11</span> 2.1.2 Analysis questions</h1>
-<div id="whats-the-average-rwa-score-for-each-gender" class="section level2" number="11.1">
-<h2><span class="header-section-number">11.1</span> 1. What’s the average RWA score for each gender?</h2>
+<div id="analysis-questions-2" class="section level1" number="12">
+<h1><span class="header-section-number">12</span> 2.1.2 Analysis questions</h1>
+<div id="whats-the-average-rwa-score-for-each-gender" class="section level2" number="12.1">
+<h2><span class="header-section-number">12.1</span> 1. What’s the average RWA score for each gender?</h2>
 <pre class="r"><code>rwa_data %&gt;%
   select(gender, rwa_score) %&gt;%
   filter(!gender == 0) %&gt;%
@@ -734,9 +761,10 @@ pivot_candy[pivot_candy == &quot;I&#39;d rather not say&quot;] &lt;- &quot;Other
 {"columns":[{"label":["gender"],"name":[1],"type":["chr"],"align":["left"]},{"label":["mean(rwa_score)"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"Female","2":"39.39667"},{"1":"Male","2":"52.37526"},{"1":"Other","2":"27.79487"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+<p>These results appear to be in line with perceptions about authoritarianism. It may be anticipated that ‘other’ gender identifications would, due to recent social change that has been contentious, be orientated against right wing conservative authoritarianism. However, there seems to be no reason to expect that female rwa scores would be significantly lower than male scores as the driving RWA psychological factors are authoritarism, traditionalism and and conservatism - and these are not specfic to gender. It may be assumed that women seeking equality would orientate, generally, against traditionalism and this may be a factor.</p>
 </div>
-<div id="whats-the-average-rwa-score-for-left-handed-people-vs.-right-handed-people." class="section level2" number="11.2">
-<h2><span class="header-section-number">11.2</span> 2. What’s the average RWA score for left handed people vs. right handed people.</h2>
+<div id="whats-the-average-rwa-score-for-left-handed-people-vs.-right-handed-people." class="section level2" number="12.2">
+<h2><span class="header-section-number">12.2</span> 2. What’s the average RWA score for left handed people vs. right handed people.</h2>
 <pre class="r"><code>rwa_data %&gt;%
   select(hand, rwa_score) %&gt;%
   filter(!hand == 0) %&gt;%
@@ -747,9 +775,10 @@ pivot_candy[pivot_candy == &quot;I&#39;d rather not say&quot;] &lt;- &quot;Other
 {"columns":[{"label":["hand"],"name":[1],"type":["chr"],"align":["left"]},{"label":["mean(rwa_score)"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"Both","2":"53.67327"},{"1":"Left","2":"47.11348"},{"1":"Right","2":"47.14812"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+<p>These results are effecively anticipated to be the same. There would seem to be no reason to expect ambidextrous people to be more orientated to RWA than left or right handers, but this may, some would argue, point to genetic factors that may lie behind RWA orientation. However, conversely, scores measured by age, for instance, would seem to indicate cultural issues are more significant and outweigh, or mask, genetic factors.</p>
 </div>
-<div id="whats-the-average-family-size-for-each-type-of-childhood" class="section level2" number="11.3">
-<h2><span class="header-section-number">11.3</span> 3. What’s the average family size for each type of childhood?</h2>
+<div id="whats-the-average-family-size-for-each-type-of-childhood" class="section level2" number="12.3">
+<h2><span class="header-section-number">12.3</span> 3. What’s the average family size for each type of childhood?</h2>
 <pre class="r"><code>rwa_data %&gt;%
   select(urban, familysize) %&gt;%
   filter(!urban == 0) %&gt;%
@@ -760,22 +789,25 @@ pivot_candy[pivot_candy == &quot;I&#39;d rather not say&quot;] &lt;- &quot;Other
 {"columns":[{"label":["urban"],"name":[1],"type":["chr"],"align":["left"]},{"label":["round(mean(familysize))"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"Rural","2":"3"},{"1":"Suburban","2":"3"},{"1":"Urban","2":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+<p>The results would seem to be in line with expectations as traditional rural areas would incline to larger families. Costs would be a driving factor, it is assumed, in urban areas. However, there is no marked difference across the family backgrounds and so inferences are offered with caution.</p>
 </div>
-<div id="whats-the-average-time-to-take-the-test-for-each-education-level" class="section level2" number="11.4">
-<h2><span class="header-section-number">11.4</span> 4 What’s the average time to take the test for each education level?</h2>
+<div id="whats-the-average-time-to-take-the-test-for-each-education-level" class="section level2" number="12.4">
+<h2><span class="header-section-number">12.4</span> 4 What’s the average time to take the test for each education level?</h2>
 <pre class="r"><code>rwa_data %&gt;%
   select(education, testelapse) %&gt;%
   filter(!education == 0) %&gt;%
   group_by(education) %&gt;%
-  summarise( round(mean(testelapse)))</code></pre>
+  summarise( time_taken = round(mean(testelapse)))</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["education"],"name":[1],"type":["chr"],"align":["left"]},{"label":["round(mean(testelapse))"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"Graduate degree","2":"330"},{"1":"High school","2":"512"},{"1":"Less than high school","2":"380"},{"1":"University degree","2":"623"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["education"],"name":[1],"type":["chr"],"align":["left"]},{"label":["time_taken"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"Graduate degree","2":"330"},{"1":"High school","2":"512"},{"1":"Less than high school","2":"380"},{"1":"University degree","2":"623"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+<p>These results are possibly what would be expected - that those with the highest education would respond quickly due to ability and that those people who are not educationally developed would respond quickly because they did not think about their answers so much.</p>
+<p>It would seem surprising that the time differential between graduate and university educated respondents is so significant. No explanation or hypthosis can be offered.</p>
 </div>
-<div id="create-a-plot-of-results-of-question-4." class="section level2" number="11.5">
-<h2><span class="header-section-number">11.5</span> 5. Create a plot of results of question 4.</h2>
+<div id="create-a-plot-of-results-of-question-4." class="section level2" number="12.5">
+<h2><span class="header-section-number">12.5</span> 5. Create a plot of results of question 4.</h2>
 <pre class="r"><code>data &lt;- rwa_data %&gt;%
   select(education, testelapse) %&gt;%
   filter(!education == 0) %&gt;%
@@ -785,8 +817,8 @@ education &lt;- table(data)
 plot(education)</code></pre>
 <p><img src="data:image/png;base64,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" width="672" /></p>
 </div>
-<div id="whats-the-average-rwa-score-for-people-aged" class="section level2" number="11.6">
-<h2><span class="header-section-number">11.6</span> 6. What’s the average RWA score for people aged</h2>
+<div id="whats-the-average-rwa-score-for-people-aged" class="section level2" number="12.6">
+<h2><span class="header-section-number">12.6</span> 6. What’s the average RWA score for people aged</h2>
 <p>Under 18 18 to 25 26 to 40 41 to 60</p>
 <pre class="r"><code>rwa_data %&gt;% 
   select(age, rwa_score) %&gt;%
@@ -799,16 +831,19 @@ plot(education)</code></pre>
 {"columns":[{"label":["age_cuts"],"name":[1],"type":["fct"],"align":["left"]},{"label":["avg_rwa_score"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"(0,18]","2":"57"},{"1":"(18,25]","2":"52"},{"1":"(25,26]","2":"47"},{"1":"(26,40]","2":"42"},{"1":"(40,41]","2":"41"},{"1":"(41,60]","2":"41"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+<p>These results would suggest that age may be a factor in RWA scores as there is a steady decline. This would again suggest cultural and social factors are key to RWA scores, though genetic factors, as suggested by gender results above may indicate some basis for assuming that genetics are a factor.</p>
 </div>
 </div>
-<div id="task-6---dog-owners-survey" class="section level1" number="12">
-<h1><span class="header-section-number">12</span> 2.2 Task 6 - Dog owners survey</h1>
+<div id="task-6---dog-owners-survey" class="section level1" number="13">
+<h1><span class="header-section-number">13</span> 2.2 Task 6 - Dog owners survey</h1>
 <p>The data is available in the file dog_survey.csv It is the results of a survey filled in by dog owners about their dogs.</p>
+<p>The data had a number of difficult problems such as more than one dog on each line, currency figures merged with numbers, character datatypes for numbers and so on. Some problems had to be fixed by going to specific dataframe positions instead of programmatic functions. Consistent field values were enforced and empty or invalid columns were dropped.</p>
 </div>
-<div id="read-in-the-data-1" class="section level1" number="13">
-<h1><span class="header-section-number">13</span> Read in the data</h1>
+<div id="wrangle-the-data-1" class="section level1" number="14">
+<h1><span class="header-section-number">14</span> Wrangle the data</h1>
 <pre class="r"><code>source(here::here(&quot;R_scripts/read_in_dog_survey.R&quot;))</code></pre>
 <pre><code>## Warning in eval(ei, envir): NAs introduced by coercion</code></pre>
+<pre class="r"><code>dog_survey &lt;- read_rds(here::here(&quot;Cleaned_data/dog_survey.rds&quot;))</code></pre>
 <pre class="r"><code>glimpse(dog_survey)</code></pre>
 <pre><code>## Rows: 291
 ## Columns: 9
@@ -822,10 +857,10 @@ plot(education)</code></pre>
 ## $ dog_gender               &lt;chr&gt; &quot;M&quot;, &quot;M&quot;, &quot;F&quot;, &quot;M&quot;, &quot;F&quot;, &quot;M&quot;, &quot;M&quot;, &quot;M&quot;, &quot;F&quot;, ~
 ## $ dog_age                  &lt;int&gt; 53, 2, 71, 9, 23, 74, 46, 84, 69, 24, 60, 43,~</code></pre>
 </div>
-<div id="analysis-questions-3" class="section level1" number="14">
-<h1><span class="header-section-number">14</span> 2.2.2 Analysis questions</h1>
-<div id="the-client-only-counts-a-valid-email-address-as-one-ending-in-.com.-how-many-survey-results-have-a-valid-email-address." class="section level2" number="14.1">
-<h2><span class="header-section-number">14.1</span> 1. The client only counts a valid email address as one ending in ‘.com’. How many survey results have a valid email address.</h2>
+<div id="analysis-questions-3" class="section level1" number="15">
+<h1><span class="header-section-number">15</span> 2.2.2 Analysis questions</h1>
+<div id="the-client-only-counts-a-valid-email-address-as-one-ending-in-.com.-how-many-survey-results-have-a-valid-email-address." class="section level2" number="15.1">
+<h2><span class="header-section-number">15.1</span> 1. The client only counts a valid email address as one ending in ‘.com’. How many survey results have a valid email address.</h2>
 <pre class="r"><code>dog_survey %&gt;%
  select(email, contains(&quot;.com&quot;)) %&gt;%
   summarise(valid_email_addresses = sum(n()))</code></pre>
@@ -834,9 +869,10 @@ plot(education)</code></pre>
 {"columns":[{"label":["valid_email_addresses"],"name":[1],"type":["int"],"align":["right"]}],"data":[{"1":"291"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+<p>As there were 291 rows in the data that means they probably enforce this data quality rule. Its not clear why and its not clear if that indicates data gathering and question criteria that may skew the data.</p>
 </div>
-<div id="whats-the-average-amount-spent-on-dog-food-for-each-dog-size." class="section level2" number="14.2">
-<h2><span class="header-section-number">14.2</span> 2. What’s the average amount spent on dog food for each dog size.</h2>
+<div id="whats-the-average-amount-spent-on-dog-food-for-each-dog-size." class="section level2" number="15.2">
+<h2><span class="header-section-number">15.2</span> 2. What’s the average amount spent on dog food for each dog size.</h2>
 <pre class="r"><code>&quot;%ni%&quot; &lt;- Negate(&quot;%in%&quot;)
 dog_sums &lt;- dog_survey %&gt;%
               filter(!is.na(amount_spent_on_dog_food)) %&gt;%
@@ -850,9 +886,10 @@ dog_sums %&gt;%
 {"columns":[{"label":["dog_size"],"name":[1],"type":["chr"],"align":["left"]},{"label":["mean(amount_spent_on_dog_food)"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"L","2":"51.36585"},{"1":"M","2":"46.40000"},{"1":"S","2":"50.23256"},{"1":"XL","2":"49.76471"},{"1":"XS","2":"55.69231"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+<p>Its not clear why XS would require more money than XL but as there is no significant difference across the results it is, perhaps, an anomaly.</p>
 </div>
-<div id="for-owners-whose-surname-starts-with-a-letter-in-the-second-half-of-the-alphabet-n-onwards-what-is-the-average-age-of-their-dog" class="section level2" number="14.3">
-<h2><span class="header-section-number">14.3</span> 3. For owners whose surname starts with a letter in the second half of the alphabet (N onwards) what is the average age of their dog?</h2>
+<div id="for-owners-whose-surname-starts-with-a-letter-in-the-second-half-of-the-alphabet-n-onwards-what-is-the-average-age-of-their-dog" class="section level2" number="15.3">
+<h2><span class="header-section-number">15.3</span> 3. For owners whose surname starts with a letter in the second half of the alphabet (N onwards) what is the average age of their dog?</h2>
 <pre class="r"><code>dog_sums &lt;- dog_survey %&gt;%
   filter(substr(last_name,1,1) &gt;= &quot;N&quot;) 
 
@@ -864,8 +901,8 @@ dog_sums %&gt;%
   </script>
 </div>
 </div>
-<div id="the-dog_age-column-is-the-age-in-dog-years.-if-the-conversion-is-1-human-year-6-dog-years-then-what-is-the-average-human-age-for-dogs-of-each-gender" class="section level2" number="14.4">
-<h2><span class="header-section-number">14.4</span> 4. The dog_age column is the age in dog years. If the conversion is 1 human year = 6 dog years, then what is the average human age for dogs of each gender?</h2>
+<div id="the-dog_age-column-is-the-age-in-dog-years.-if-the-conversion-is-1-human-year-6-dog-years-then-what-is-the-average-human-age-for-dogs-of-each-gender" class="section level2" number="15.4">
+<h2><span class="header-section-number">15.4</span> 4. The dog_age column is the age in dog years. If the conversion is 1 human year = 6 dog years, then what is the average human age for dogs of each gender?</h2>
 <pre class="r"><code> dog_survey %&gt;%
               filter(!is.na(dog_age)) %&gt;%
               group_by(dog_gender) %&gt;%
@@ -875,9 +912,10 @@ dog_sums %&gt;%
 {"columns":[{"label":["dog_gender"],"name":[1],"type":["chr"],"align":["left"]},{"label":["human_years_dog_age"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"F","2":"8"},{"1":"M","2":"8"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+<p>This would seem to be expected as there is no apparent reason why dog lives would vary by age.</p>
 </div>
-<div id="create-a-plot-of-results-of-question-4.-1" class="section level2" number="14.5">
-<h2><span class="header-section-number">14.5</span> 5. Create a plot of results of question 4.</h2>
+<div id="create-a-plot-of-results-of-question-4.-1" class="section level2" number="15.5">
+<h2><span class="header-section-number">15.5</span> 5. Create a plot of results of question 4.</h2>
 <pre class="r"><code>dog_sums &lt;- dog_survey %&gt;%
               filter(!is.na(dog_age)) %&gt;%
               group_by(dog_gender) %&gt;%

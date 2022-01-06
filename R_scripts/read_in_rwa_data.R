@@ -1,4 +1,6 @@
 # Called from pda_dirty_data.Rmd
+# Howard Davies pda_dirty_data D12
+
 rwa_data <- read.csv(here::here("data/rwa.csv"))  %>% clean_names()
 
 # Warm up questions are removed (2)

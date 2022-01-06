@@ -1,5 +1,6 @@
 # read_in_dog_survey.R
 # called from pda_dirty_data.Rmd
+# Howard Davies pda_dirty_data D12
 dog_survey <- read.csv(here::here("data/dog_survey.csv"))  %>% clean_names()
 
 # Get rid of duplicates
@@ -80,5 +81,6 @@ dog_survey <- dog_survey[-c(119,120),]
 }
 ## End (not run)
 
+write_rds(dog_survey, here::here("Cleaned_data/dog_survey.rds"))
 
 
